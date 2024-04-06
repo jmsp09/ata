@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_home"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        android:title="@string/home"/>
+    <item
+        android:id="@+id/item_info"
+        android:enabled="true"
+        android:icon="@drawable/info"
+        android:title="@string/info"/>
+
+    <item
+        android:id="@+id/item_options"
+        android:enabled="true"
+        android:icon="@drawable/opciones"
+        android:title="@string/options"/>
+</menu>

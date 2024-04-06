@@ -33,10 +33,10 @@ public class Tuner {
 
 
     //TODO
-    public void showResults(String note, double frequency, boolean isError, String errMsg) {
+    public void showResults(DetectedNote note, boolean isError, String errMsg) {
 
 
-        activity.showTunerResults(note, frequency, isError, errMsg);
+        activity.showTunerResults(note, isError, errMsg);
 
         //TODO
         if (isError) {

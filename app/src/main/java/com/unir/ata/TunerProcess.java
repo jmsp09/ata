@@ -84,7 +84,7 @@ public class TunerProcess implements Runnable {
 
 
         if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-            showResults(null, 0.0, true, "No se pudo inicializar el micrófono");
+            showResults(null, true, "No se pudo inicializar el micrófono");
             Log.d("!!!********EError ", "!!!********No se pudo inicializar el micrófono");
             return;
         }
@@ -142,10 +142,10 @@ public class TunerProcess implements Runnable {
                 Log.d("!!!bestFrequency: " + bestFrequency, "!!!bestFrequency: " + bestFrequency);
                 Log.d("!!!bestAmplitude: " + bestAmplitude, "!!!bestAmplitude: " + bestAmplitude);
                 Log.d("!!!!!!!!!!!!", "!!!!!!!!!!!!!!!! ");
-                postResultsByHandler(getNoteName(bestFrequency), bestFrequency, false, null);
+                postResultsByHandler(getNoteName(bestFrequency), false, null);
             } else {
                 // No se recoge ningún sonido
-                postResultsByHandler("Not sound", 0.0, false, null);
+                postResultsByHandler(null, true, "Not sound");
             }
 
         }
@@ -153,72 +153,52 @@ public class TunerProcess implements Runnable {
         audioRecord.release();
     }
 
-    public String getNoteName(double frecuencia) {
+    public DetectedNote getNoteName(double frecuency) {
+
         int interval;
-        String noteName;
+        double octaves;
+        DetectedNote note = new DetectedNote();
+        note.setFrequency(frecuency);
 
         interval = (int) Math
-                .round(((((Math.log(frecuencia)) - (Math.log(440))) / (Math
+                .round(((((Math.log(frecuency)) - (Math.log(440))) / (Math
                         .log(2))) * 12));
 
-        if (interval > 11 || interval < 0) {
-            interval = interval % 12;
-        }
-        if (interval < 0) {
-            interval = 12 + interval;
-        }
-        switch (interval) {
-            case 0:
-                noteName = "La";
-                break;
-            case 1:
-                noteName = "Si#";
-                break;
-            case 2:
-                noteName = "Si";
-                break;
-            case 3:
-                noteName = "Do";
-                break;
-            case 4:
-                noteName = "Do#";
-                break;
-            case 5:
-                noteName = "Re";
-                break;
-            case 6:
-                noteName = "Re#";
-                break;
-            case 7:
-                noteName = "Mi";
-                break;
-            case 8:
-                noteName = "Fa";
-                break;
-            case 9:
-                noteName = "Fa#";
-                break;
-            case 10:
-                noteName = "Sol";
-                break;
-            case 11:
-                noteName = "Sol#";
-                break;
-            default:
-                noteName = "";
-                break;
+
+        octaves = interval / 12;
+        interval = (interval % 12 + 12) % 12; // Ajuste para asegurar que interval está entre 0 y 11
+
+        // Convertir las octavas a frecuencia
+        octaves = Math.pow(2, octaves);
+        Log.d("!!!********!octaves: " + octaves, "!!!********!octaves: " + octaves);
+
+        //La, Si#, Si, Do, Do#, Re...
+        double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
+                                739.99, 783.99, 830.61};
+        String[] noteNames = {"La", "Si#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
+
+        // Asegurarse de que el intervalo esté dentro del rango
+        if (interval < 0 || interval >= frequencies.length) {
+            return note;
         }
 
-        return noteName;
+        // Calcular la frecuencia de referencia (si estuviera afinada)
+        double freqReference = frequencies[interval] * octaves;
+
+        //Rellenamos las propiedades de la nota detectada
+        note.setName(noteNames[interval]);
+        note.setDeviation(frecuency - freqReference);
+
+        return note;
     }
 
 
-    protected void showResults(String note, double frequency, boolean isError, String errMsg) {
-        tuner.showResults(note, frequency, isError, errMsg);
+    protected void showResults(DetectedNote note, boolean isError, String errMsg) {
+        tuner.showResults(note, isError, errMsg);
     }
 
-    private void postResultsByHandler(String note, double frequency, boolean isError, String errMsg) {
-        handler.post(() -> showResults(note, frequency, isError, errMsg));
+    private void postResultsByHandler(DetectedNote note, boolean isError, String errMsg) {
+        handler.post(() -> showResults(note, isError, errMsg));
     }
 
 

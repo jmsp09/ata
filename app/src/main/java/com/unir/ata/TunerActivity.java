@@ -125,10 +125,16 @@ public class TunerActivity extends AppCompatActivity {
         tuner.start();
     }
 
-    public void showTunerResults(String note, double frequency, boolean isError, String errMsg) {
+    public void showTunerResults(DetectedNote note, boolean isError, String errMsg) {
 
         //if(isError) //TODO
-        textViewFreq.setText(note);
-        textViewFreq.setText("" + frequency);
+        if (isError || note == null) {
+            errMsg = errMsg == null || errMsg == ""? "Sin sonido" : errMsg;
+            textViewNote.setText(errMsg);
+            textViewFreq.setText("");
+        } else {
+            textViewNote.setText(note.getName());
+            textViewFreq.setText("" + note.getFrequency() + " Hz");
+        }
     }
 }

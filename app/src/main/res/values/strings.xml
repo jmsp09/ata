@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Accessible Tuner App</string>
+    <string name="change_instrument">Instrumentos</string>
+    <string name="initialHz">0 Hz</string>
+    <string name="initialNote">#</string>
+    <string name="info">Información</string>
+    <string name="options">Opciones</string>
+    <string name="home">Inicio</string>
 </resources>

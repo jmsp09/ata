@@ -1,12 +1,12 @@
 package com.unir.ata;
 
-public class Note {
+public class DetectedNote {
 
     protected double frequency;
     protected double deviation;
-    protected String nombre;
+    protected String name;
 
-    public Note() {
+    public DetectedNote() {
     }
 
     public double getFrequency() {
@@ -25,11 +25,11 @@ public class Note {
         this.deviation = deviation;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 }
