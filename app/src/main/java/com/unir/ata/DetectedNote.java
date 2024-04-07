@@ -2,9 +2,13 @@ package com.unir.ata;
 
 public class DetectedNote {
 
-    protected double frequency;
-    protected double deviation;
-    protected String name;
+    private String name;
+    private double frequency;
+    private double deviation;
+
+
+
+    private double decibels;
 
     public DetectedNote() {
     }
@@ -31,5 +35,13 @@ public class DetectedNote {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getDecibels() {
+        return decibels;
+    }
+
+    public void setDecibels(double decibels) {
+        this.decibels = decibels;
     }
 }

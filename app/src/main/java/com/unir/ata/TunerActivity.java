@@ -18,15 +18,19 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class TunerActivity extends AppCompatActivity {
 
+
+    //Constantes
+    private static final int PERMISSION_RECORD_AUDIO = 1;
+
     //Variables
     private Tuner tuner;
 
     //Elementos visuales
     private TextView textViewNote;
     private TextView textViewFreq;
-
-    //Constantes
-    private static final int PERMISSION_RECORD_AUDIO = 1;
+    private TextView textViewLastNotes;
+    private TextView textViewLastFreqs;
+    private TextView textDBs;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,6 +54,9 @@ public class TunerActivity extends AppCompatActivity {
         //TODO
         textViewNote = (TextView) findViewById(R.id.textViewNote);
         textViewFreq = (TextView) findViewById(R.id.textViewFreq);
+        textViewLastNotes = (TextView) findViewById(R.id.textViewLastNotes);
+        textViewLastFreqs = (TextView) findViewById(R.id.textViewLastFreqs);
+        textDBs = (TextView) findViewById(R.id.textDBs);
 
         //Requerimos permiso de grabación e iniciamos el afinador
         requestAudioPermissions();
@@ -95,26 +102,23 @@ public class TunerActivity extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        switch (requestCode) {
-            case PERMISSION_RECORD_AUDIO: {
+        if (requestCode == PERMISSION_RECORD_AUDIO) {
+            //Permiso concedido
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initTuner();
 
-                //Permiso concedido
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    initTuner();
+            } else {
+                //Permiso denegado
 
-                } else {
-                    //Permiso denegado
-                    //TODO mostrar error
-
-                    Toast.makeText(this,
-                            "Permiso denegado",
-                            Toast.LENGTH_LONG).show();
-                }
+                //TODO mostrar error
+                Toast.makeText(this,
+                        "Permiso denegado",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -127,14 +131,20 @@ public class TunerActivity extends AppCompatActivity {
 
     public void showTunerResults(DetectedNote note, boolean isError, String errMsg) {
 
-        //if(isError) //TODO
+        String[] lastDetections =  LastDetections.print();
         if (isError || note == null) {
-            errMsg = errMsg == null || errMsg == ""? "Sin sonido" : errMsg;
+            errMsg = errMsg == null || errMsg.isEmpty() ? "Sin sonido" : errMsg; //TODO
             textViewNote.setText(errMsg);
             textViewFreq.setText("");
         } else {
             textViewNote.setText(note.getName());
-            textViewFreq.setText("" + note.getFrequency() + " Hz");
+            textViewFreq.setText(note.getFrequency() + " Hz");
+            textViewLastFreqs.setText(lastDetections[LastDetections.FREQUENCIES]);
+            textViewLastNotes.setText(lastDetections[LastDetections.NOTES]);
+            textDBs.setText(""+note.getDecibels() + " DB");
+
+            //Guardamos las últimas notas en el historial
+            LastDetections.addDetection(note);
         }
     }
 }

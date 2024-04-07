@@ -1,0 +1,50 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <ImageButton
+        android:id="@+id/button1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/home"
+        android:scaleType="fitStart"
+        android:background="@null"
+        android:padding="20dp"
+        android:text="Botón 1"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:contentDescription="Botón 1" />
+
+    <ImageButton
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/info"
+        android:scaleType="fitStart"
+        android:background="@null"
+        android:padding="20dp"
+        android:text="Botón 2"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:contentDescription="Botón 2" />
+
+    <ImageButton
+        android:id="@+id/button3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/opciones"
+        android:scaleType="fitStart"
+        android:background="@null"
+        android:padding="20dp"
+        android:text="Botón 3"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:contentDescription="Botón 3" />
+
+</LinearLayout>

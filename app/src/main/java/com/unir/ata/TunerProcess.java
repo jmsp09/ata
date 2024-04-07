@@ -20,7 +20,7 @@ public class TunerProcess implements Runnable {
 
     //Constantes del formato de audio
     private final static int RATE = 8000;
-    private final static int CHANNEL = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+    private final static int CHANNEL = AudioFormat.CHANNEL_IN_MONO;
     private final static int ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 
     //Constantes para el buffer
@@ -34,7 +34,7 @@ public class TunerProcess implements Runnable {
     private final static int SEGMENT_BYTES = RATE * SEGMENT_MS / 1000 * 2;
 
     //Frecuencias mínimas y máximas
-    private final static int MIN_FREQ = 25;
+    private final static int MIN_FREQ = 40;
     private final static int MAX_FREQ = 4200;
     private final static int MIN_FREQ_BY_RATE = (MIN_FREQ * SEGMENT / RATE);
     private final static int MAX_FREQ_BY_RATE = (MAX_FREQ * SEGMENT / RATE);
@@ -114,7 +114,7 @@ public class TunerProcess implements Runnable {
             }
 
             //Aplicamos fft
-            fft.doFFT(realPart, imaginaryPart, false);
+            fft.doFFT(realPart, imaginaryPart);
 
 
             //Calculamos la frecuencia a partir de los datos de la FFT
@@ -123,13 +123,14 @@ public class TunerProcess implements Runnable {
             float db;
 
             for (int i = MIN_FREQ_BY_RATE; i <= MAX_FREQ_BY_RATE; i++) {
-                final double current_frequency = i * 1.0 * RATE
-                        / SEGMENT;
+                final double current_frequency = ((double)i * 1.0 * RATE) / SEGMENT;
                 final double current_amplitude = Math.pow(realPart[i], 2)
                         + Math.pow(imaginaryPart[i], 2);
                 if (current_amplitude > bestAmplitude) {
+
                     bestFrequency = current_frequency;
-                    bestAmplitude = current_amplitude;
+                    bestAmplitude = current_amplitude;Log.d("!!!bFreq: " + bestFrequency +" bAmpl: " + bestAmplitude,
+                            "!!!bFreq: " + bestFrequency +" bAmpl: " + bestAmplitude);
                 }
 
             }
@@ -137,12 +138,12 @@ public class TunerProcess implements Runnable {
             db = 20 * (float)(Math.log10(bestAmplitude));
 
 
-            if (bestFrequency > MIN_FREQ && db > 50) {
+            if (bestFrequency > MIN_FREQ && db > 60) {
                 Log.d("!!!********!< DB: " + db, "!!!********!< DB: " + db);
                 Log.d("!!!bestFrequency: " + bestFrequency, "!!!bestFrequency: " + bestFrequency);
                 Log.d("!!!bestAmplitude: " + bestAmplitude, "!!!bestAmplitude: " + bestAmplitude);
                 Log.d("!!!!!!!!!!!!", "!!!!!!!!!!!!!!!! ");
-                postResultsByHandler(getNoteName(bestFrequency), false, null);
+                postResultsByHandler(getDetectedNote(bestFrequency, db), false, null);
             } else {
                 // No se recoge ningún sonido
                 postResultsByHandler(null, true, "Not sound");
@@ -153,7 +154,7 @@ public class TunerProcess implements Runnable {
         audioRecord.release();
     }
 
-    public DetectedNote getNoteName(double frecuency) {
+    public DetectedNote getDetectedNote(double frecuency, double decibels) {
 
         int interval;
         double octaves;
@@ -172,7 +173,7 @@ public class TunerProcess implements Runnable {
         octaves = Math.pow(2, octaves);
         Log.d("!!!********!octaves: " + octaves, "!!!********!octaves: " + octaves);
 
-        //La, Si#, Si, Do, Do#, Re...
+        //La, Si#, Si, Do, Do#, Re... //TODO
         double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
                                 739.99, 783.99, 830.61};
         String[] noteNames = {"La", "Si#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
@@ -188,6 +189,7 @@ public class TunerProcess implements Runnable {
         //Rellenamos las propiedades de la nota detectada
         note.setName(noteNames[interval]);
         note.setDeviation(frecuency - freqReference);
+        note.setDecibels(decibels);
 
         return note;
     }

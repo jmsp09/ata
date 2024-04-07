@@ -24,7 +24,7 @@ public class FFT {
     }
 
 
-    public void doFFT(double [] realPart, double [] imaginaryPart, boolean inverseTransform) {
+    public void doFFT(double [] realPart, double [] imaginaryPart) {
         int n, n2;
         int i, j, k;
         int jn2, invertedjn2;
@@ -41,9 +41,6 @@ public class FFT {
                     sin = Math.sin(alfa);
                     jn2 = j + n2;
 
-                    if (inverseTransform) {
-                        sin = -sin;
-                    }
                     tReal = realPart[jn2] * cos + imaginaryPart[jn2] * sin;
                     tImaginary = imaginaryPart[jn2] * cos - realPart[jn2] * sin;
 
@@ -68,14 +65,14 @@ public class FFT {
             imaginaryPart[i] = tImaginary;
         }
 
-        if (!inverseTransform) {
-            double d = 1.0 / n;
 
-            for (i = 0; i < n ; i++) {
-                realPart[i] *= d;
-                imaginaryPart[i] *= d;
-            }
+        double d = 1.0 / n;
+
+        for (i = 0; i < n ; i++) {
+            realPart[i] *= d;
+            imaginaryPart[i] *= d;
         }
+
     }
 
 }
