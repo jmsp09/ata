@@ -16,6 +16,9 @@
         android:theme="@style/Theme.AccessibleTunerApp"
         tools:targetApi="31">
         <activity
+            android:name=".InstrumentsActivity"
+            android:exported="false" />
+        <activity
             android:name=".TunerActivity"
             android:exported="false" />
         <activity

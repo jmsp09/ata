@@ -13,9 +13,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Constantes
-    private static final int TUNER_ACTIVITY = 1;
-    private static final int OPTIONS_ACTIVITY = 2;
+    //Navegacion
+    private Navigation navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
         //Inicializar settings
         //TODO
 
+        //Inicializamos navegacion
+        navigation = Navigation.getInstance(this);
+
         //Inicializar toolbar, botones, eventos
         //Toolbar toolbar = this.findViewById(R.id.toolbar);
         //toolbar.setTitle("");//TODO
@@ -44,21 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Redirect
         //if settings están configuradas
-        redirect(TUNER_ACTIVITY);
+        Navigation.redirect(Navigation.TUNER_ACTIVITY);
         //else
         //Mostrar options
 
 
-    }
-
-    private void redirect(int activity) {
-
-        if (activity == TUNER_ACTIVITY) {
-            Intent intent = new Intent(this, TunerActivity.class);
-            startActivity(intent);
-        } else if (activity == OPTIONS_ACTIVITY) {
-            //TODO
-        }
     }
 
 }

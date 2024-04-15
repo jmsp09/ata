@@ -6,4 +6,18 @@
     <string name="info">Información</string>
     <string name="options">Opciones</string>
     <string name="home">Inicio</string>
+    <string name="homeDescription">Inicio</string>
+    <string name="homeTxt">Inicio</string>
+    <string name="information">Información</string>
+    <string name="informationTxt">Info</string>
+    <string name="optionsDescription">Opciones</string>
+    <string name="optionsTxt">Opciones</string>
+    <string name="select_instrument">Seleccione un intrumento:</string>
+    <string name="select_intrument_description">Seleccione un instrumento de los que se encuentran más abajo</string>
+    <string name="violin">Violin</string>
+    <string name="clarinete">Clarinete</string>
+    <string name="trompeta">Trompeta</string>
+    <string name="violin_description">violin</string>
+    <string name="clarinete_description">clarinete</string>
+    <string name="trompeta_description">trompeta</string>
 </resources>

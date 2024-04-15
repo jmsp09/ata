@@ -1,6 +1,7 @@
 package com.unir.ata;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -32,6 +33,9 @@ public class TunerActivity extends AppCompatActivity {
     private TextView textViewLastFreqs;
     private TextView textDBs;
 
+    //Navegacion
+    private Navigation navigation;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,9 @@ public class TunerActivity extends AppCompatActivity {
 
         //Inicializar settings
         //TODO
+
+        //Inicializar navegacion
+        navigation = Navigation.getInstance(this);
 
         //Inicializar botones, eventos
         //TODO
@@ -123,6 +130,10 @@ public class TunerActivity extends AppCompatActivity {
         }
     }
 
+    private void initNavigation() {
+        navigation.initNavigation();
+    }
+
 
     private void initTuner() {
         tuner = Tuner.getInstance(this);
@@ -147,4 +158,5 @@ public class TunerActivity extends AppCompatActivity {
             LastDetections.addDetection(note);
         }
     }
+
 }

@@ -1,11 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<com.google.android.material.bottomnavigation.BottomNavigationView
-    android:id="@+id/top_navigation"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/backgroundNavigation"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:menu="@menu/menu"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:orientation="horizontal"
+    android:id="@+id/navigation"
+    android:background="@color/white">
+
+    <!-- Menu Item Inicio -->
+    <LinearLayout
+        android:id="@+id/homeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/border"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/home"
+            android:contentDescription="@string/homeDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/homeTxt"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Menu Item Inicio -->
+    <LinearLayout
+        android:id="@+id/infoButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/border"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/info"
+            android:contentDescription="@string/information" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/informationTxt"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Menu Item Opciones -->
+    <LinearLayout
+        android:id="@+id/optionsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/border"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/opciones"
+            android:contentDescription="@string/optionsDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/optionsTxt"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Add more menu items as needed -->
+
+</LinearLayout>
