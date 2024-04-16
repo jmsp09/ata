@@ -1,10 +1,10 @@
 package com.unir.ata;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.ViewFlipper ;
 
 import androidx.annotation.NonNull;
 
@@ -14,26 +14,28 @@ public class Navigation {
     private static Navigation navigation;
 
     @SuppressLint("StaticFieldLeak")
-    private static Activity activity;
+    private static TunerActivity activity;
 
     //Navegables
-    protected static final int TUNER_ACTIVITY = 1;
-    protected static final int INFO_ACTIVITY = 2;
-    protected static final int OPTIONS_ACTIVITY = 3;
+    protected static final int TUNER_ACTIVITY = 0;
+    protected static final int INFO_ACTIVITY = 1;
+    protected static final int OPTIONS_ACTIVITY = 2;
+    private static ViewFlipper viewFlipper;
 
     //Elementos
-    View homeButton;
-    View infoButton;
-    View optionsButton;
+    private View homeButton;
+    private View infoButton;
+    private View optionsButton;
 
     private Navigation() {
     }
 
-    protected static Navigation getInstance(@NonNull Activity activity){
+    protected static Navigation getInstance(@NonNull TunerActivity activity){
         if (navigation == null) {
             navigation = new Navigation();
         }
         Navigation.activity = activity;
+        viewFlipper = activity.findViewById(R.id.viewFlipper);
         navigation.initNavigation();
         return navigation;
     }
@@ -72,28 +74,35 @@ public class Navigation {
     }
 
 
-    public static Activity getActivity() {
+    public static TunerActivity getActivity() {
         return activity;
     }
 
-    protected static void redirect(int activity) {
+    protected static void redirect(int fragment) {
 
         if (getActivity() == null) {
             //No se ha inicializado correctamente
             return;
         }
-        Class<?> class2Redirect = TunerActivity.class;
-        if (activity == Navigation.TUNER_ACTIVITY) {
-            class2Redirect = TunerActivity.class;
-        } else if (activity == Navigation.INFO_ACTIVITY) {
-            class2Redirect = TunerActivity.class; //TODO
-        } else if (activity == Navigation.OPTIONS_ACTIVITY){
-            class2Redirect = InstrumentsActivity.class; //TODO
+        if (viewFlipper == null) {
+            Class<?> class2Redirect = TunerActivity.class;
+            if (fragment == Navigation.TUNER_ACTIVITY) {
+                class2Redirect = TunerActivity.class;
+            } /*else if (fragment == Navigation.INFO_ACTIVITY) {
+                class2Redirect = TunerActivity.class; //TODO
+            } else if (fragment == Navigation.OPTIONS_ACTIVITY){
+                class2Redirect = InstrumentsActivity.class; //TODO
+            }*/
+
+            if (Navigation.getActivity().getClass() != class2Redirect) {
+                Intent intent = new Intent(getActivity(), class2Redirect);
+                getActivity().startActivity(intent);
+            }
+        } else {
+            viewFlipper.setDisplayedChild(fragment);
+            activity.initFragment(fragment);
+
         }
 
-        if (Navigation.getActivity().getClass() != class2Redirect) {
-            Intent intent = new Intent(getActivity(), class2Redirect);
-            getActivity().startActivity(intent);
-        }
     }
 }

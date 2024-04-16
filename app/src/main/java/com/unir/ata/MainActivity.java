@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO
 
         //Inicializamos navegacion
-        navigation = Navigation.getInstance(this);
+        //navigation = Navigation.getInstance(this);
 
         //Inicializar toolbar, botones, eventos
         //Toolbar toolbar = this.findViewById(R.id.toolbar);
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         //Redirect
         //if settings están configuradas
         Navigation.redirect(Navigation.TUNER_ACTIVITY);
+        Intent intent = new Intent(this, TunerActivity.class);
+        this.startActivity(intent);
         //else
         //Mostrar options
 

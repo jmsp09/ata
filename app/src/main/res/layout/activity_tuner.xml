@@ -11,53 +11,39 @@
     <!--<include layout="@layout/toolbar" />-->
     <include layout="@layout/navigation" />
 
-    <TextView
-        android:id="@+id/textViewLastNotes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="textViewLastNotes"
-        app:layout_constraintStart_toEndOf="@+id/textViewNote"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewNote"
-        app:layout_constraintStart_toStartOf="parent" />
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp">
 
-    <TextView
-        android:id="@+id/textViewNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/initialNote"
-        android:textSize="60sp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewFreq"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <!-- Layout 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewLastFreqs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="lastFreqs"
-        app:layout_constraintStart_toEndOf="@+id/textViewFreq"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewFreq"
-        app:layout_constraintStart_toStartOf="parent" />
+            <include layout="@layout/tuner_fragment" />
 
-    <TextView
-        android:id="@+id/textDBs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="lastFreqs"
-        app:layout_constraintStart_toEndOf="@+id/textViewFreq"
-        app:layout_constraintBaseline_toBottomOf="@+id/textViewFreq" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewFreq"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/initialHz"
-        android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <!-- Layout 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/info_fragment" />
+
+        </LinearLayout>
+
+        <!-- Layout 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/instruments_fragment" />
+
+        </LinearLayout>
+
+    </ViewFlipper >
 
 </androidx.constraintlayout.widget.ConstraintLayout>

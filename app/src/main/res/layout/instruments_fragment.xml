@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout
+    android:id="@+id/instruments_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TunerActivity">
-
-    <include layout="@layout/navigation" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -17,16 +15,14 @@
         android:padding="4dp"
         android:contentDescription="@string/select_intrument_description"
         android:text="@string/select_instrument"
-        android:background="#0000FF"
-        android:layout_marginTop="100dp">
+        android:background="#0000FF">
 
     </TextView>
 
     <!-- RecyclerView to display vertical scrollable cards -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_marginTop="210dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</RelativeLayout>
+</LinearLayout>

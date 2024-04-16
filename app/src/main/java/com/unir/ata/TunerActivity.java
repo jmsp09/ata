@@ -1,23 +1,31 @@
 package com.unir.ata;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.Manifest;
+import android.widget.ViewFlipper;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class TunerActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TunerActivity extends AppCompatActivity
+        implements InstrumentCardAdapter.OnCardItemClickListener {
 
 
     //Constantes
@@ -26,12 +34,19 @@ public class TunerActivity extends AppCompatActivity {
     //Variables
     private Tuner tuner;
 
+    private ViewFlipper viewFlipper;
+
     //Elementos visuales
     private TextView textViewNote;
     private TextView textViewFreq;
     private TextView textViewLastNotes;
     private TextView textViewLastFreqs;
     private TextView textDBs;
+
+    //Variables para el fragment de selector de instrumentos
+    private RecyclerView recyclerView;
+    private InstrumentCardAdapter cardAdapter;
+    private List<InstrumentCardItem> instrumentCardItems;
 
     //Navegacion
     private Navigation navigation;
@@ -55,15 +70,40 @@ public class TunerActivity extends AppCompatActivity {
         //TODO
 
         //Inicializar navegacion
+        viewFlipper = findViewById(R.id.viewFlipper);
         navigation = Navigation.getInstance(this);
 
+        //Inicializamos afinador
+        initTunerFragment();
+    }
+
+    public void initFragment(@NonNull int fragment) {
+
+        //Interrumpimos la ejecución del afinador si estamos en una página diferente
+        if (fragment != Navigation.TUNER_ACTIVITY) {
+            stopTuner();
+        }
+
+        //Redirigimos al fragmento deseado
+        if (fragment == Navigation.TUNER_ACTIVITY) {
+            initTunerFragment();
+        } else if (fragment == Navigation.INFO_ACTIVITY) {
+            //initTunerFragment();
+        } else if (fragment == Navigation.OPTIONS_ACTIVITY){
+            initInstrumentsFragment();
+        }
+    }
+
+
+    private void initTunerFragment() {
         //Inicializar botones, eventos
         //TODO
-        textViewNote = (TextView) findViewById(R.id.textViewNote);
-        textViewFreq = (TextView) findViewById(R.id.textViewFreq);
-        textViewLastNotes = (TextView) findViewById(R.id.textViewLastNotes);
-        textViewLastFreqs = (TextView) findViewById(R.id.textViewLastFreqs);
-        textDBs = (TextView) findViewById(R.id.textDBs);
+        LinearLayout tunerFragment =  findViewById(R.id.tuner_fragment);
+        textViewNote = (TextView) tunerFragment.findViewById(R.id.textViewNote);
+        textViewFreq = (TextView) tunerFragment.findViewById(R.id.textViewFreq);
+        textViewLastNotes = (TextView) tunerFragment.findViewById(R.id.textViewLastNotes);
+        textViewLastFreqs = (TextView) tunerFragment.findViewById(R.id.textViewLastFreqs);
+        textDBs = (TextView) tunerFragment.findViewById(R.id.textDBs);
 
         //Requerimos permiso de grabación e iniciamos el afinador
         requestAudioPermissions();
@@ -140,6 +180,11 @@ public class TunerActivity extends AppCompatActivity {
         tuner.start();
     }
 
+    private void stopTuner() {
+        tuner = Tuner.getInstance(this);
+        tuner.interrupt();
+    }
+
     public void showTunerResults(DetectedNote note, boolean isError, String errMsg) {
 
         String[] lastDetections =  LastDetections.print();
@@ -157,6 +202,43 @@ public class TunerActivity extends AppCompatActivity {
             //Guardamos las últimas notas en el historial
             LastDetections.addDetection(note);
         }
+    }
+
+    public void initInstrumentsFragment() {
+
+        // Initialize RecyclerView
+        LinearLayout instrumentsFragment = findViewById(R.id.instruments_fragment);
+        recyclerView = instrumentsFragment.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Prepare card items
+        instrumentCardItems = new ArrayList<>();
+        instrumentCardItems.add(new InstrumentCardItem(R.drawable.violin,
+                getString(R.string.violin), getString(R.string.violin_description)));
+        instrumentCardItems.add(new InstrumentCardItem(R.drawable.clarinete,
+                getString(R.string.clarinete), getString(R.string.clarinete_description)));
+        instrumentCardItems.add(new InstrumentCardItem(R.drawable.trompeta,
+                getString(R.string.trompeta), getString(R.string.trompeta_description)));
+
+        // Set up adapter for RecyclerView
+        cardAdapter = new InstrumentCardAdapter(this, instrumentCardItems, this);
+        recyclerView.setAdapter(cardAdapter);
+    }
+
+
+    @Override
+    public void onImageClick(int position) {
+        InstrumentCardItem clickedItem = instrumentCardItems.get(position);
+        Toast.makeText(this, "InstrumentoImg: " + clickedItem.getText(), Toast.LENGTH_SHORT).show();
+        //TODO
+    }
+
+    @Override
+    public void onTextClick(int position) {
+        InstrumentCardItem clickedItem = instrumentCardItems.get(position);
+        Toast.makeText(this, "InstrumentoTxt: "
+                + clickedItem.getDescription(), Toast.LENGTH_SHORT).show();
+        //TODO
     }
 
 }

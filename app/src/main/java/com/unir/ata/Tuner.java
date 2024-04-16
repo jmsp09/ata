@@ -12,7 +12,6 @@ public class Tuner {
 
     private Tuner (TunerActivity activity) {
         this.activity = activity;
-        this.tunerProcess = new Thread(TunerProcess.getInstance(this));
     }
 
     public static Tuner getInstance(TunerActivity activity) {
@@ -24,11 +23,17 @@ public class Tuner {
 
     public void start() {
         Log.d("!!!********Tuner start ", "!!!********");
-        this.tunerProcess.start();
+        if (this.tunerProcess == null || !this.tunerProcess.isAlive()) {
+            this.tunerProcess = new Thread(TunerProcess.getInstance(this));
+            this.tunerProcess.start();
+        }
     }
 
     public void interrupt() {
-        this.tunerProcess.interrupt();
+        if (!this.tunerProcess.isInterrupted() || this.tunerProcess.isInterrupted()) {
+            this.tunerProcess.interrupt();
+        }
+
     }
 
 

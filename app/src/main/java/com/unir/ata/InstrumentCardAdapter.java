@@ -22,7 +22,7 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
     public interface OnCardItemClickListener {
         void onImageClick(int position);
 
-        void onDescriptionClick(int position);
+        void onTextClick(int position);
     }
 
     public InstrumentCardAdapter(Context context, List<InstrumentCardItem> instrumentCardItemList,
@@ -76,7 +76,7 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onDescriptionClick(position);
+                    listener.onTextClick(position);
                 }
             }
         });
