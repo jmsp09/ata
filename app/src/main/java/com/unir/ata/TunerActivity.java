@@ -213,10 +213,10 @@ public class TunerActivity extends AppCompatActivity
 
         // Prepare card items
         instrumentCardItems = new ArrayList<>();
-        instrumentCardItems.add(new InstrumentCardItem(R.drawable.violin,
-                getString(R.string.violin), getString(R.string.violin_description)));
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.clarinete,
                 getString(R.string.clarinete), getString(R.string.clarinete_description)));
+        instrumentCardItems.add(new InstrumentCardItem(R.drawable.bombardino,
+                getString(R.string.bombardino), getString(R.string.bombardino_description)));
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.trompeta,
                 getString(R.string.trompeta), getString(R.string.trompeta_description)));
 

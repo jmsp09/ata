@@ -11,8 +11,8 @@
     <!-- Image -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:scaleType="fitXY"
         app:tint="#FFBB00"
         android:src="@drawable/info" /> <!-- Default image resource -->
@@ -22,7 +22,8 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="50sp"
+        app:autoSizeTextType="uniform"
+        android:textSize="40sp"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
         android:text="Description" />
