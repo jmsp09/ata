@@ -20,4 +20,5 @@
     <string name="violin_description">violin</string>
     <string name="clarinete_description">clarinete</string>
     <string name="trompeta_description">trompeta</string>
+    <string name="activity_running">shortcut activity running</string>
 </resources>

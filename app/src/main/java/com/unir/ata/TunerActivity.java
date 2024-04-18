@@ -227,13 +227,6 @@ public class TunerActivity extends AppCompatActivity
 
 
     @Override
-    public void onImageClick(int position) {
-        InstrumentCardItem clickedItem = instrumentCardItems.get(position);
-        Toast.makeText(this, "InstrumentoImg: " + clickedItem.getText(), Toast.LENGTH_SHORT).show();
-        //TODO
-    }
-
-    @Override
     public void onTextClick(int position) {
         InstrumentCardItem clickedItem = instrumentCardItems.get(position);
         Toast.makeText(this, "InstrumentoTxt: "
