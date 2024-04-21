@@ -3,7 +3,10 @@ package com.unir.ata;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class TunerActivity extends AppCompatActivity
         implements InstrumentCardAdapter.OnCardItemClickListener {
@@ -50,6 +54,9 @@ public class TunerActivity extends AppCompatActivity
 
     //Navegacion
     private Navigation navigation;
+    private Persistence persistence;
+    private int instrument;
+    private String language;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -67,7 +74,7 @@ public class TunerActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //Inicializar settings
-        //TODO
+        initSettings();
 
         //Inicializar navegacion
         viewFlipper = findViewById(R.id.viewFlipper);
@@ -229,9 +236,40 @@ public class TunerActivity extends AppCompatActivity
     @Override
     public void onTextClick(int position) {
         InstrumentCardItem clickedItem = instrumentCardItems.get(position);
-        Toast.makeText(this, "InstrumentoTxt: "
+
+        Persistence persistence = Persistence.getInstance(this);
+        persistence.setInstrument(position);
+
+        Toast.makeText(this, "Instrumento seleccionado: "
                 + clickedItem.getDescription(), Toast.LENGTH_SHORT).show();
         //TODO
+
+        Navigation.redirect(Navigation.TUNER_ACTIVITY);
     }
+
+    @Override
+    public void onTextTouch(int position) {
+        InstrumentCardItem clickedItem = instrumentCardItems.get(position);
+
+        AudioMessage.getInstance(this)
+                .playMessage(clickedItem.getText() + AudioMessage.AM_CLICK_SELECCIONAR,
+                        AudioMessage.AM_VIBRATION_TOUCH);
+
+    }
+
+    private void initSettings(){
+
+        persistence = Persistence.getInstance(this);
+
+        instrument = persistence.getInstrument();
+        language = persistence.getLanguage();
+
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = getResources().getConfiguration();
+        configuration.setLocale(locale);
+        getBaseContext().createConfigurationContext(configuration);
+    }
+
 
 }

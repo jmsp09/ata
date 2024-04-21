@@ -3,6 +3,8 @@ package com.unir.ata;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 public class Tuner {
 
     //Atributos
@@ -10,11 +12,17 @@ public class Tuner {
     protected TunerActivity activity;
     protected Thread tunerProcess;
 
+    //Constantes
+    public static final int INSTRUMENT_CLARINET = 1;
+    public static final int INSTRUMENT_BOMBARDINO = 2;
+    public static final int INSTRUMENT_TROMPETA = 3;
+
+
     private Tuner (TunerActivity activity) {
         this.activity = activity;
     }
 
-    public static Tuner getInstance(TunerActivity activity) {
+    public static Tuner getInstance(@NonNull TunerActivity activity) {
         if (tuner == null) {
             tuner = new Tuner(activity);
         }

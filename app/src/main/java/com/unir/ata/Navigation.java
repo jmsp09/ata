@@ -2,6 +2,7 @@ package com.unir.ata;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 import android.widget.ViewFlipper ;
@@ -53,20 +54,53 @@ public class Navigation {
 
             if (homeButton != null) {
                 homeButton.setOnClickListener(v -> Navigation.redirect(TUNER_ACTIVITY));
+
+                homeButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+
+                        AudioMessage.getInstance(activity)
+                                .playMessage((String) homeButton.getContentDescription(),
+                                        AudioMessage.AM_VIBRATION_TOUCH);
+                        return false;
+                    }
+                });
             }
+
             if (infoButton != null) {
                 infoButton.setOnClickListener(v -> Navigation.redirect(INFO_ACTIVITY));
+
+                infoButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+
+                        AudioMessage.getInstance(activity)
+                                .playMessage((String) infoButton.getContentDescription(),
+                                        AudioMessage.AM_VIBRATION_TOUCH);
+                        return false;
+                    }
+                });
             }
+
 
             if (optionsButton != null) {
                 optionsButton.setOnClickListener(v -> {
                     Navigation.redirect(OPTIONS_ACTIVITY);
 
                 });
-            } else {
-                Toast.makeText(Navigation.getActivity(), "optionsButton?? FALSE ", Toast.LENGTH_SHORT).show();
 
+                optionsButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+
+                        AudioMessage.getInstance(activity)
+                                .playMessage((String) optionsButton.getContentDescription(),
+                                        AudioMessage.AM_VIBRATION_TOUCH);
+                        return false;
+                    }
+                });
             }
+
         }
 
 

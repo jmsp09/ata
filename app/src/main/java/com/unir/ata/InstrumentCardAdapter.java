@@ -2,9 +2,14 @@ package com.unir.ata;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,11 +26,14 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
     private final List<InstrumentCardItem> instrumentCardItemList;
     private final OnCardItemClickListener listener;
     private Context context;
+    private View lastTouchedView;
 
     public interface OnCardItemClickListener {
         //void onImageClick(int position);
 
         void onTextClick(int position);
+
+        void onTextTouch(int position);
     }
 
     public InstrumentCardAdapter(Context context, List<InstrumentCardItem> instrumentCardItemList,
@@ -56,7 +64,7 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
         return new CardViewHolder(view);
     }
 
-    @SuppressLint("RecyclerView")
+    @SuppressLint({"RecyclerView", "ClickableViewAccessibility"})
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, final int position) {
         final InstrumentCardItem instrumentCardItem = instrumentCardItemList.get(position);
@@ -66,6 +74,8 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
         holder.imageView.setContentDescription(instrumentCardItem.getText());
         holder.textView.setText(instrumentCardItem.getText());
         holder.textView.setContentDescription(instrumentCardItem.getDescription());
+        holder.cardItem.setContentDescription(instrumentCardItem.getDescription());
+        holder.cardItem.setTag(instrumentCardItem.getDescription());
 
         // Handle click on image
         /*holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -83,20 +93,48 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
             public void onClick(View v) {
                 if (listener != null) {
                     listener.onTextClick(position);
-                    Vibrator vibrator = (Vibrator) holder.cardItem.getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    // Verificar si el dispositivo soporta la vibración y si el permiso está concedido
-                    if (vibrator != null && vibrator.hasVibrator()) {
-                        // Vibrar durante 100 milisegundos
-                        /*vibrator.vibrate(VibrationEffect
-                                .createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));*/
-                        //TODO https://developer.android.com/develop/ui/views/haptics/actuators
-                        long[] timings = new long[] { 40, 50, 20 }; //TODO Vibración corta para onTouch, investigar una larga para onClick
-                        int[] amplitudes = new int[] { 17, 29, 44};
-                        int repeatIndex = -1; // Do not repeat.
 
-                        vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, repeatIndex));
+                }
+            }
+        });
+
+        holder.cardItem.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (listener != null) {
+                    listener.onTextTouch(position);
+
+                    switch (event.getAction()) {
+
+                        case MotionEvent.ACTION_DOWN:
+                            // Acción cuando se presiona el dedo sobre el layout
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            // Acción cuando se mueve el dedo sobre el layout
+
+                            /*
+
+                           Log.d("!!!!!!111" + v.getParent(), "!!!!!!!!1111");
+                            Log.d("!!!!!!222" + (ViewGroup)v.getParent(), "!!!!!!!222");
+
+                            View currentView = findViewAt((ViewGroup) v.getParent(),
+                                    (int) event.getRawX(), (int) event.getRawY());
+
+                            Log.d("!!!!!!aaaa!!!!!" + currentView, "!!!!!!!!!!!aaa" + currentView);
+
+                            // Si la vista actual es diferente de la última vista, significa que el usuario ha pasado a un nuevo layout
+                            if (currentView != null && currentView != lastTouchedView) {
+                                listener.onTextTouch(position);
+                                lastTouchedView = currentView;
+                                Log.d("!!!!!!aaaa!!!!!", "!!!!!!!!!!!aaa");
+                            }*/
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            // Acción cuando se levanta el dedo del layout
+                            break;
                     }
                 }
+                return false; // Retornar true para indicar que se ha manejado el evento
             }
         });
 

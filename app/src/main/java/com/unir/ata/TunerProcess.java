@@ -7,6 +7,7 @@ import android.media.MediaRecorder.AudioSource;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 public class TunerProcess implements Runnable {
@@ -46,7 +47,7 @@ public class TunerProcess implements Runnable {
         this.handler = new Handler();
     }
 
-    public static TunerProcess getInstance(Tuner tuner) {
+    public static TunerProcess getInstance(@NonNull Tuner tuner) {
         if (tunerProcess == null) {
             tunerProcess = new TunerProcess(tuner);
         }
