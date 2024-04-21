@@ -244,7 +244,7 @@ public class TunerActivity extends AppCompatActivity
                 + clickedItem.getDescription(), Toast.LENGTH_SHORT).show();
         //TODO
 
-        Navigation.redirect(Navigation.TUNER_ACTIVITY);
+        //Navigation.redirect(Navigation.TUNER_ACTIVITY);
     }
 
     @Override
@@ -252,7 +252,8 @@ public class TunerActivity extends AppCompatActivity
         InstrumentCardItem clickedItem = instrumentCardItems.get(position);
 
         AudioMessage.getInstance(this)
-                .playMessage(clickedItem.getText() + AudioMessage.AM_CLICK_SELECCIONAR,
+                .playMessage(clickedItem.getText()
+                        + ". " + this.getString(AudioMessage.AM_CLICK_SELECCIONAR),
                         AudioMessage.AM_VIBRATION_TOUCH);
 
     }

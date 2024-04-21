@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -17,11 +19,14 @@ public class AudioMessage {
     private static TextToSpeech textToSpeech;
     private static boolean statusOK = false;
     private static String lastMessage = "";
+    private static boolean isSpeaking = false;
+    private static UtteranceProgressListener utteranceListener;
+
 
     //Mensajes
-    public static final int AM_CLICK_SELECCIONAR = R.string.am_click_seleccionar;
-    public static final int AM_CLICK_AFINAR = R.string.am_click_afinar;
-    public static final int AM_CLICK_INSTRUMENTOS = R.string.am_click_instrumentos;
+    public static int AM_CLICK_SELECCIONAR = R.string.am_click_seleccionar;
+    public static int AM_CLICK_AFINAR = R.string.am_click_afinar;
+    public static int AM_CLICK_INSTRUMENTOS = R.string.am_click_instrumentos;
 
     //Vibraciones
     public static final int AM_VIBRATION_TOUCH = 1;
@@ -43,6 +48,8 @@ public class AudioMessage {
     }
 
     private void init() {
+
+        //Inicializamos sintetizador de texto
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -51,22 +58,50 @@ public class AudioMessage {
 
                     //textToSpeech.setLanguage(Locale.);
                     statusOK = true;
+                    utteranceListener = new UtteranceProgressListener() {
+                        @Override
+                        public void onStart(String utteranceId) {
+
+                        }
+
+                        @Override
+                        public void onDone(String utteranceId) {
+                            isSpeaking = false;
+                        }
+
+                        @Override
+                        public void onError(String utteranceId) {
+                            isSpeaking = false;
+                        }
+                    };
                 }
             }
         });
     }
 
     protected void playMessage(@NonNull String text, int typeVibration) {
-        if (statusOK && lastMessage != null && (!lastMessage.equals(text) && textToSpeech.isSpeaking())) {
+
+        Log.d("!!!!-----------" + statusOK, "!!!!!!00");
+        Log.d("!!!!1lastMessage" + lastMessage, "!!!!!!11" + (lastMessage == null) );
+        Log.d("!!!!text" + lastMessage, "!!!!!!22" + text);
+        Log.d("!!!!4lastMessage" + lastMessage, "!!!!!!44");
+
+        if (!textToSpeech.isSpeaking()) {
+            isSpeaking = false;
+        }
+        if (statusOK && (lastMessage == null || lastMessage.isEmpty() || (
+                lastMessage != null && !isSpeaking))) {
+            Log.d("!!!!5", "!!!!!!55");
+            isSpeaking = true;
             lastMessage = text;
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
 
             switch (typeVibration) {
                 case AM_VIBRATION_TOUCH:
-                    //touchVibration();
+                    touchVibration();
                     break;
                 case AM_VIBRATION_CLICK:
-                    //clickVibration();
+                    clickVibration();
                     break;
                 default:
                     break;
