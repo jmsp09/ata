@@ -1,13 +1,16 @@
 package com.unir.ata;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -15,10 +18,46 @@ public class MainActivity extends AppCompatActivity {
 
     //Navegacion
     private Navigation navigation;
+    private final int DELAY = 2000;
+    private boolean keep = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
+        SplashScreen splashScreen;
+        if (Build.VERSION.SDK_INT >= 31){
+            splashScreen = SplashScreen.installSplashScreen(this); //init new splash screen api for Android 12+
+
+            //Keep returning false to Should Keep On Screen until ready to begin.
+            splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
+                @Override
+                public boolean shouldKeepOnScreen() {
+                    return keep;
+                }
+            });
+            Handler handler = new Handler();
+            handler.postDelayed(runner, DELAY);
+            super.onCreate(savedInstanceState);
+        } else{
+            setTheme(R.style.Theme_AccessibleTunerApp); //else use old approach
+            super.onCreate(savedInstanceState);
+            start();
+        }
+
+
+
+    }
+
+    private final Runnable runner = new Runnable() {
+        @Override
+        public void run() {
+            keep = false;
+            start();
+
+        }
+    };
+
+    private void start() {
         EdgeToEdge.enable(this); //TODO
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> { //TODO
@@ -51,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(intent);
         //else
         //Mostrar options
-
-
     }
 
 }

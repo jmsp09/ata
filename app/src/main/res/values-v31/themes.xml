@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.NewSplashScreenTheme" parent="Base.Theme.AccessibleTunerApp">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowSplashScreenBackground">@color/black</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash600</item>
+        <item name="android:windowSplashScreenAnimationDuration">40000</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/black</item>
+    </style>
+</resources>
