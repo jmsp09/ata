@@ -34,4 +34,5 @@
     <string name="clarinete_tooltip">Afinando para clarinete</string>
     <string name="select_instrument_tooltip">Seleccione uno de los siguientes instrumentos</string>
     <string name="am_selected_instrument">Afinando para</string>
+    <string name="microphone_not_allowed">No se pudo inicializar el micrófono</string>
 </resources>

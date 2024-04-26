@@ -38,7 +38,7 @@ public class Tuner {
     }
 
     public void interrupt() {
-        if (!this.tunerProcess.isInterrupted() || this.tunerProcess.isInterrupted()) {
+        if (this.tunerProcess != null && (this.tunerProcess.isInterrupted() || this.tunerProcess.isInterrupted())) {
             this.tunerProcess.interrupt();
         }
 

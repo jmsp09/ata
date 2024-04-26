@@ -62,31 +62,37 @@ public class TunerProcess implements Runnable {
         android.os.Process
                 .setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
-        AudioRecord audioRecord;
+        AudioRecord audioRecord = null;
+        boolean errorMicrophone = false;
+
         try {
 
             //Comprobamos acceso al micrófono
             if (ActivityCompat.checkSelfPermission(
                     this.tuner.activity, 
-                    android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                Log.d("!!!********EError ", "!!!********Sin microfono");
-                return;
+                    android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+
+                audioRecord = new AudioRecord(AudioSource.MIC,
+                        RATE,
+                        CHANNEL,
+                        ENCODING,
+                        BF_BYTES);
+            } else {
+                errorMicrophone = true;
             }
 
-            audioRecord = new AudioRecord(AudioSource.MIC,
-                    RATE,
-                    CHANNEL,
-                    ENCODING,
-                    BF_BYTES);
+
         } catch (Exception e) {
-            Log.d("!!!********Error79 ", "!!!********" + e);
-            throw e; //TODO revisar
+            errorMicrophone = true;
         }
 
 
-        if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-            showResults(null, true, "No se pudo inicializar el micrófono");
-            Log.d("!!!********EError ", "!!!********No se pudo inicializar el micrófono");
+        if (errorMicrophone || audioRecord == null || audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
+            showResults(null, true, tuner.activity.getString(R.string.microphone_not_allowed));
+
+            AudioMessage.getInstance(tuner.activity)
+                    .playMessage(tuner.activity.getString(R.string.microphone_not_allowed),
+                            AudioMessage.AM_VIBRATION_CONFIRM);
             return;
         }
 
@@ -174,7 +180,7 @@ public class TunerProcess implements Runnable {
         octaves = Math.pow(2, octaves);
         Log.d("!!!********!octaves: " + octaves, "!!!********!octaves: " + octaves);
 
-        //La, Si#, Si, Do, Do#, Re... //TODO
+        //La, Si#, Si, Do, Do#, Re...
         double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
                                 739.99, 783.99, 830.61};
         String[] noteNames = {"La", "Si#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};

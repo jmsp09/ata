@@ -163,11 +163,9 @@ public class TunerActivity extends AppCompatActivity
 
             } else {
                 //Permiso denegado
-
-                //TODO mostrar error
-                Toast.makeText(this,
-                        "Permiso denegado",
-                        Toast.LENGTH_LONG).show();
+                AudioMessage.getInstance(this)
+                        .playMessage(getString(R.string.microphone_not_allowed),
+                                AudioMessage.AM_VIBRATION_INFO);
             }
         }
     }
