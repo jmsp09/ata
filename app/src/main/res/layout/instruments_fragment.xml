@@ -8,12 +8,14 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/selectInstrument"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="40sp"
         android:padding="10dp"
         android:gravity="center"
+        android:tooltipText="@string/select_instrument_tooltip"
         android:contentDescription="@string/select_intrument_description"
         android:text="@string/select_instrument"
         android:background="@color/blue">

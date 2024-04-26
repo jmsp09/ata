@@ -2,12 +2,13 @@ package com.unir.ata;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.ViewFlipper ;
 
 import androidx.annotation.NonNull;
+
+import java.util.Objects;
 
 public class Navigation {
 
@@ -27,6 +28,10 @@ public class Navigation {
     private View homeButton;
     private View infoButton;
     private View optionsButton;
+
+    //Trazabilidad de los clicks para gestionar la navegabilidad
+    private static long lastClickMs = System.currentTimeMillis();
+    private static String lastClickView;
 
     private Navigation() {
     }
@@ -53,51 +58,55 @@ public class Navigation {
 
 
             if (homeButton != null) {
-                homeButton.setOnClickListener(v -> Navigation.redirect(TUNER_ACTIVITY));
+                homeButton.setOnClickListener(v -> {
+                    AudioMessage.getInstance(activity)
+                            .playMessage((String) Objects.requireNonNull(homeButton.getTooltipText()),
+                                    AudioMessage.AM_VIBRATION_INFO);
 
-                homeButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
+                });
 
-                        AudioMessage.getInstance(activity)
-                                .playMessage((String) homeButton.getContentDescription(),
-                                        AudioMessage.AM_VIBRATION_TOUCH);
-                        return false;
-                    }
+                homeButton.setOnLongClickListener(v -> {
+                    Log.d("!!&&","!!&&"+ (String) homeButton.getTooltipText());
+                    AudioMessage.getInstance(activity)
+                            .playMessage((String) homeButton.getContentDescription(),
+                                    AudioMessage.AM_VIBRATION_CONFIRM);
+                    Navigation.redirect(TUNER_ACTIVITY);
+                    return true;
                 });
             }
 
             if (infoButton != null) {
-                infoButton.setOnClickListener(v -> Navigation.redirect(INFO_ACTIVITY));
+                infoButton.setOnClickListener(v -> {
+                    AudioMessage.getInstance(activity)
+                            .playMessage((String) Objects.requireNonNull(infoButton.getTooltipText()),
+                                    AudioMessage.AM_VIBRATION_INFO);
 
-                infoButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
+                });
 
-                        AudioMessage.getInstance(activity)
-                                .playMessage((String) infoButton.getContentDescription(),
-                                        AudioMessage.AM_VIBRATION_TOUCH);
-                        return false;
-                    }
+                infoButton.setOnLongClickListener(v -> {
+                    AudioMessage.getInstance(activity)
+                            .playMessage((String) infoButton.getContentDescription(),
+                                    AudioMessage.AM_VIBRATION_CONFIRM);
+                    Navigation.redirect(INFO_ACTIVITY);
+                    return true;
                 });
             }
 
 
             if (optionsButton != null) {
                 optionsButton.setOnClickListener(v -> {
-                    Navigation.redirect(OPTIONS_ACTIVITY);
+                    AudioMessage.getInstance(activity)
+                            .playMessage((String) Objects.requireNonNull(optionsButton.getTooltipText()),
+                                    AudioMessage.AM_VIBRATION_INFO);
 
                 });
 
-                optionsButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-
-                        AudioMessage.getInstance(activity)
-                                .playMessage((String) optionsButton.getContentDescription(),
-                                        AudioMessage.AM_VIBRATION_TOUCH);
-                        return false;
-                    }
+                optionsButton.setOnLongClickListener(v -> {
+                    AudioMessage.getInstance(activity)
+                            .playMessage((String) optionsButton.getContentDescription(),
+                                    AudioMessage.AM_VIBRATION_CONFIRM);
+                    Navigation.redirect(OPTIONS_ACTIVITY);
+                    return true;
                 });
             }
 
@@ -138,5 +147,34 @@ public class Navigation {
 
         }
 
+    }
+
+    public boolean isDoubleTap(@NonNull String viewTag) {
+        final long MAX_DOUBLE_TAP_MS = 500;
+        boolean isDoubleTap = false;
+        long currentTimeMs = System.currentTimeMillis();
+        lastClickView = viewTag;
+
+        Log.d("&&&" + viewTag + lastClickView, "&&" + (System.currentTimeMillis() - lastClickMs));
+        if (viewTag.equals(lastClickView)
+                &&  currentTimeMs - lastClickMs < MAX_DOUBLE_TAP_MS) {
+            isDoubleTap = true;
+        }
+        lastClickMs = currentTimeMs;
+        lastClickView = viewTag;
+        return isDoubleTap;
+
+
+    }
+
+    public void onClickListener(@NonNull String viewTag) {
+        long currentTimeMs = System.currentTimeMillis();
+
+        //Si sobre un mismo elemento, hay una diferencia menor de 500ms entre toque y toque, entonces es una doble pulsación
+        if (isDoubleTap(viewTag)) {
+
+        } else  {
+
+        }
     }
 }

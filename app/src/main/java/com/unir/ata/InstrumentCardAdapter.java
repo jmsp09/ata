@@ -31,9 +31,9 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
     public interface OnCardItemClickListener {
         //void onImageClick(int position);
 
-        void onTextClick(int position);
+        void onClick(int position);
 
-        void onTextTouch(int position);
+        void onLongClick(int position);
     }
 
     public InstrumentCardAdapter(Context context, List<InstrumentCardItem> instrumentCardItemList,
@@ -77,67 +77,18 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
         holder.cardItem.setContentDescription(instrumentCardItem.getDescription());
         holder.cardItem.setTag(instrumentCardItem.getDescription());
 
-        // Handle click on image
-        /*holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onImageClick(position);
-                }
-            }
-        });*/
 
-        // Handle click on description
-        holder.cardItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onTextClick(position);
-
-                }
+        holder.cardItem.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onClick(position);
             }
         });
-
-        holder.cardItem.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (listener != null) {
-                    listener.onTextTouch(position);
-
-                    switch (event.getAction()) {
-
-                        case MotionEvent.ACTION_DOWN:
-                            // Acción cuando se presiona el dedo sobre el layout
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            // Acción cuando se mueve el dedo sobre el layout
-
-                            /*
-
-                           Log.d("!!!!!!111" + v.getParent(), "!!!!!!!!1111");
-                            Log.d("!!!!!!222" + (ViewGroup)v.getParent(), "!!!!!!!222");
-
-                            View currentView = findViewAt((ViewGroup) v.getParent(),
-                                    (int) event.getRawX(), (int) event.getRawY());
-
-                            Log.d("!!!!!!aaaa!!!!!" + currentView, "!!!!!!!!!!!aaa" + currentView);
-
-                            // Si la vista actual es diferente de la última vista, significa que el usuario ha pasado a un nuevo layout
-                            if (currentView != null && currentView != lastTouchedView) {
-                                listener.onTextTouch(position);
-                                lastTouchedView = currentView;
-                                Log.d("!!!!!!aaaa!!!!!", "!!!!!!!!!!!aaa");
-                            }*/
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            // Acción cuando se levanta el dedo del layout
-                            break;
-                    }
-                }
-                return false; // Retornar true para indicar que se ha manejado el evento
+        holder.cardItem.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onLongClick(position);
             }
+            return true;
         });
-
 
     }
 

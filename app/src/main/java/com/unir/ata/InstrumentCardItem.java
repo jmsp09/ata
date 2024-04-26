@@ -5,11 +5,13 @@ public class InstrumentCardItem {
     private int imageResourceId;
     private String text;
     private String description;
+    private String tooltip;
 
-    public InstrumentCardItem(int imageResourceId, String text, String description) {
+    public InstrumentCardItem(int imageResourceId, String text, String description, String tooltip) {
         this.imageResourceId = imageResourceId;
         this.text = text;
         this.description = description;
+        this.tooltip = tooltip;
     }
 
     public int getImageResourceId() {
@@ -21,6 +23,11 @@ public class InstrumentCardItem {
     }
     public String getDescription() {
         return description;
+    }
+
+
+    public String getTooltip() {
+        return tooltip;
     }
 }
 

@@ -10,6 +10,7 @@
     <LinearLayout
         android:id="@+id/homeButton"
         android:contentDescription="@string/homeDescription"
+        android:tooltipText="@string/homeTooltip"
         android:tag="@string/homeDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -41,7 +42,8 @@
     <!-- Menu Item Inicio -->
     <LinearLayout
         android:id="@+id/infoButton"
-        android:contentDescription="@string/information"
+        android:contentDescription="@string/informationDescription"
+        android:tooltipText="@string/informationTooltip"
         android:tag="@string/information"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -71,6 +73,7 @@
     <LinearLayout
         android:id="@+id/optionsButton"
         android:contentDescription="@string/optionsDescription"
+        android:tooltipText="@string/optionsTooltip"
         android:tag="@string/optionsDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

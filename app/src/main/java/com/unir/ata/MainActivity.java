@@ -8,7 +8,6 @@ import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
@@ -16,8 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Navegacion
-    private Navigation navigation;
+
     private final int DELAY = 2000;
     private boolean keep = true;
 
@@ -58,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void start() {
-        EdgeToEdge.enable(this); //TODO
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> { //TODO
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -69,27 +67,11 @@ public class MainActivity extends AppCompatActivity {
         //Mantenemos la pantalla encendida
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        //Inicializar settings
-        //TODO
-
-        //Inicializamos navegacion
-        //navigation = Navigation.getInstance(this);
-
-        //Inicializar toolbar, botones, eventos
-        //Toolbar toolbar = this.findViewById(R.id.toolbar);
-        //toolbar.setTitle("");//TODO
-
-
-        //Mostrar un loading
-        //TODO
-
         //Redirect
-        //if settings están configuradas
         Navigation.redirect(Navigation.TUNER_ACTIVITY);
         Intent intent = new Intent(this, TunerActivity.class);
         this.startActivity(intent);
-        //else
-        //Mostrar options
+
     }
 
 }

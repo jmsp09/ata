@@ -5,14 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TunerActivity extends AppCompatActivity
         implements InstrumentCardAdapter.OnCardItemClickListener {
@@ -37,8 +34,6 @@ public class TunerActivity extends AppCompatActivity
 
     //Variables
     private Tuner tuner;
-
-    private ViewFlipper viewFlipper;
 
     //Elementos visuales
     private TextView textViewNote;
@@ -77,14 +72,13 @@ public class TunerActivity extends AppCompatActivity
         initSettings();
 
         //Inicializar navegacion
-        viewFlipper = findViewById(R.id.viewFlipper);
         navigation = Navigation.getInstance(this);
 
         //Inicializamos afinador
         initTunerFragment();
     }
 
-    public void initFragment(@NonNull int fragment) {
+    public void initFragment(int fragment) {
 
         //Interrumpimos la ejecución del afinador si estamos en una página diferente
         if (fragment != Navigation.TUNER_ACTIVITY) {
@@ -103,8 +97,8 @@ public class TunerActivity extends AppCompatActivity
 
 
     private void initTunerFragment() {
+
         //Inicializar botones, eventos
-        //TODO
         LinearLayout tunerFragment =  findViewById(R.id.tuner_fragment);
         textViewNote = (TextView) tunerFragment.findViewById(R.id.textViewNote);
         textViewFreq = (TextView) tunerFragment.findViewById(R.id.textViewFreq);
@@ -156,7 +150,8 @@ public class TunerActivity extends AppCompatActivity
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -196,7 +191,8 @@ public class TunerActivity extends AppCompatActivity
 
         String[] lastDetections =  LastDetections.print();
         if (isError || note == null) {
-            errMsg = errMsg == null || errMsg.isEmpty() ? "Sin sonido" : errMsg; //TODO
+            errMsg = errMsg == null || errMsg.isEmpty() ?
+                    this.getString(R.string.not_sound) : errMsg;
             textViewNote.setText(errMsg);
             textViewFreq.setText("");
         } else {
@@ -213,48 +209,60 @@ public class TunerActivity extends AppCompatActivity
 
     public void initInstrumentsFragment() {
 
-        // Initialize RecyclerView
+        // Inicializar RecyclerView
         LinearLayout instrumentsFragment = findViewById(R.id.instruments_fragment);
         recyclerView = instrumentsFragment.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Prepare card items
+        // Inicializar instrucciones
+        TextView selectInstrument = instrumentsFragment.findViewById(R.id.selectInstrument);
+        selectInstrument.setOnClickListener(v ->
+                AudioMessage.getInstance(this)
+                .playMessage((String) Objects.requireNonNull(selectInstrument.getTooltipText()),
+                        AudioMessage.AM_VIBRATION_INFO));
+
+        // Inicializar card items
         instrumentCardItems = new ArrayList<>();
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.clarinete,
-                getString(R.string.clarinete), getString(R.string.clarinete_description)));
+                getString(R.string.clarinete), getString(R.string.clarinete_description),
+                getString(R.string.clarinete_tooltip)));
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.bombardino,
-                getString(R.string.bombardino), getString(R.string.bombardino_description)));
+                getString(R.string.bombardino), getString(R.string.bombardino_description),
+                getString(R.string.bombardino_tooltip)));
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.trompeta,
-                getString(R.string.trompeta), getString(R.string.trompeta_description)));
+                getString(R.string.trompeta), getString(R.string.trompeta_description),
+                getString(R.string.trompeta_tooltip)));
 
-        // Set up adapter for RecyclerView
+        // Inicializar el adaptador del recyclerView
         cardAdapter = new InstrumentCardAdapter(this, instrumentCardItems, this);
         recyclerView.setAdapter(cardAdapter);
     }
 
 
     @Override
-    public void onTextClick(int position) {
-        InstrumentCardItem clickedItem = instrumentCardItems.get(position);
-
-        Persistence persistence = Persistence.getInstance(this);
-        persistence.setInstrument(position);
-
-        Toast.makeText(this, "Instrumento seleccionado: "
-                + clickedItem.getDescription(), Toast.LENGTH_SHORT).show();
-        //TODO
-
-        //Navigation.redirect(Navigation.TUNER_ACTIVITY);
-    }
-
-    @Override
-    public void onTextTouch(int position) {
+    public void onClick(int position) {
         InstrumentCardItem clickedItem = instrumentCardItems.get(position);
 
         AudioMessage.getInstance(this)
                 .playMessage(clickedItem.getText()
-                        + ". " + this.getString(AudioMessage.AM_CLICK_SELECCIONAR),
-                        AudioMessage.AM_VIBRATION_TOUCH);
+                                + ". " + this.getString(AudioMessage.AM_CLICK_SELECCIONAR),
+                        AudioMessage.AM_VIBRATION_INFO);
+
+    }
+
+    @Override
+    public void onLongClick(int position) {
+        InstrumentCardItem clickedItem = instrumentCardItems.get(position);
+
+        AudioMessage.getInstance(this)
+                .playMessage(this.getString(AudioMessage.AM_SELECTED_INSTRUMENT) +
+                                clickedItem.getDescription(),
+                        AudioMessage.AM_VIBRATION_CONFIRM);
+
+        Persistence persistence = Persistence.getInstance(this);
+        persistence.setInstrument(position);
+
+        Navigation.redirect(Navigation.TUNER_ACTIVITY);
 
     }
 
