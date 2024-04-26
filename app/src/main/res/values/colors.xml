@@ -5,4 +5,6 @@
     <color name="background">#FF000000</color>
     <color name="backgroundNavigation">#FF000000</color>
     <color name="backgroundNavigationItem">#FFFFFFFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="colorInstruments">#FFA500</color>
 </resources>

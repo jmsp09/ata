@@ -12,10 +12,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="40sp"
-        android:padding="4dp"
+        android:padding="10dp"
+        android:gravity="center"
         android:contentDescription="@string/select_intrument_description"
         android:text="@string/select_instrument"
-        android:background="#0000FF">
+        android:background="@color/blue">
 
     </TextView>
 

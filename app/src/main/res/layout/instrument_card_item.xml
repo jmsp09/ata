@@ -14,7 +14,7 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:scaleType="fitXY"
-        app:tint="#FFBB00"
+        app:tint="@color/colorInstruments"
         android:src="@drawable/info" /> <!-- Default image resource -->
 
     <!-- Description -->
@@ -25,6 +25,7 @@
         app:autoSizeTextType="uniform"
         android:textSize="40sp"
         android:layout_gravity="center"
+        android:gravity="center"
         android:textColor="@android:color/white"
         android:text="Description" />
 

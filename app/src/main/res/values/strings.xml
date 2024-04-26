@@ -24,4 +24,5 @@
     <string name="am_click_seleccionar">Haz click para seleccionar</string>
     <string name="am_click_afinar">Haz click aquí para empezar a afinar</string>
     <string name="am_click_instrumentos">Haz click para seleccionar tu instrumento</string>
+    <string name="not_sound">Sin sonido</string>
 </resources>

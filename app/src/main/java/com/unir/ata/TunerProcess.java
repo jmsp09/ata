@@ -147,7 +147,7 @@ public class TunerProcess implements Runnable {
                 postResultsByHandler(getDetectedNote(bestFrequency, db), false, null);
             } else {
                 // No se recoge ningún sonido
-                postResultsByHandler(null, true, "Not sound");
+                postResultsByHandler(null, true, tuner.activity.getString(R.string.not_sound));
             }
 
         }
