@@ -23,15 +23,12 @@ public class Navigation {
     protected static final int INFO_ACTIVITY = 1;
     protected static final int OPTIONS_ACTIVITY = 2;
     private static ViewFlipper viewFlipper;
+    private static int currentView = TUNER_ACTIVITY;
 
     //Elementos
     private View homeButton;
     private View infoButton;
     private View optionsButton;
-
-    //Trazabilidad de los clicks para gestionar la navegabilidad
-    private static long lastClickMs = System.currentTimeMillis();
-    private static String lastClickView;
 
     private Navigation() {
     }
@@ -144,37 +141,15 @@ public class Navigation {
         } else {
             viewFlipper.setDisplayedChild(fragment);
             activity.initFragment(fragment);
-
         }
+
+        if (currentView == TUNER_ACTIVITY && currentView != fragment) {
+            activity.stopTuner();
+        }
+
+        currentView = fragment;
 
     }
 
-    public boolean isDoubleTap(@NonNull String viewTag) {
-        final long MAX_DOUBLE_TAP_MS = 500;
-        boolean isDoubleTap = false;
-        long currentTimeMs = System.currentTimeMillis();
-        lastClickView = viewTag;
 
-        Log.d("&&&" + viewTag + lastClickView, "&&" + (System.currentTimeMillis() - lastClickMs));
-        if (viewTag.equals(lastClickView)
-                &&  currentTimeMs - lastClickMs < MAX_DOUBLE_TAP_MS) {
-            isDoubleTap = true;
-        }
-        lastClickMs = currentTimeMs;
-        lastClickView = viewTag;
-        return isDoubleTap;
-
-
-    }
-
-    public void onClickListener(@NonNull String viewTag) {
-        long currentTimeMs = System.currentTimeMillis();
-
-        //Si sobre un mismo elemento, hay una diferencia menor de 500ms entre toque y toque, entonces es una doble pulsación
-        if (isDoubleTap(viewTag)) {
-
-        } else  {
-
-        }
-    }
 }

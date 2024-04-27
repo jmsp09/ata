@@ -62,8 +62,8 @@ public class AudioMessage {
         if (!textToSpeech.isSpeaking()) {
             isSpeaking = false;
         }
-        if (statusOK && (typeVibration == AM_VIBRATION_CONFIRM
-                || lastMessage == null || lastMessage.isEmpty() || !isSpeaking)) {
+
+        if (statusOK && (typeVibration == AM_VIBRATION_CONFIRM || !isSpeaking)) {
             isSpeaking = true;
             lastMessage = text;
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);

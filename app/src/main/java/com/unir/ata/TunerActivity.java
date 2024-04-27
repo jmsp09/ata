@@ -73,6 +73,7 @@ public class TunerActivity extends AppCompatActivity
 
         //Inicializar navegacion
         navigation = Navigation.getInstance(this);
+        AudioMessage.getInstance(this);
 
         //Inicializamos afinador
         initTunerFragment();
@@ -130,6 +131,7 @@ public class TunerActivity extends AppCompatActivity
                         new String[] { Manifest.permission.RECORD_AUDIO},
                         PERMISSION_RECORD_AUDIO);
 
+            //Si el permiso está revocado, pedimos el acceso
             } else {
                 // Mostramos al usuario un diálogo para permitir el acceso de grabación
                 ActivityCompat.requestPermissions(this,
@@ -180,7 +182,7 @@ public class TunerActivity extends AppCompatActivity
         tuner.start();
     }
 
-    private void stopTuner() {
+    protected void stopTuner() {
         tuner = Tuner.getInstance(this);
         tuner.interrupt();
     }
