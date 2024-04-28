@@ -15,7 +15,7 @@ public class Tuner {
     //Constantes
     public static final int INSTRUMENT_CLARINET = 1;
     public static final int INSTRUMENT_BOMBARDINO = 2;
-    public static final int INSTRUMENT_TROMPETA = 3;
+    public static final int INSTRUMENT_SAXOFON = 3;
 
 
     private Tuner (TunerActivity activity) {

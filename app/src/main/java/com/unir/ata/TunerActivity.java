@@ -229,9 +229,9 @@ public class TunerActivity extends AppCompatActivity
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.bombardino,
                 getString(R.string.bombardino), getString(R.string.bombardino_description),
                 getString(R.string.bombardino_tooltip)));
-        instrumentCardItems.add(new InstrumentCardItem(R.drawable.trompeta,
-                getString(R.string.trompeta), getString(R.string.trompeta_description),
-                getString(R.string.trompeta_tooltip)));
+        instrumentCardItems.add(new InstrumentCardItem(R.drawable.saxofon,
+                getString(R.string.saxofon), getString(R.string.saxofon_description),
+                getString(R.string.saxofon_tooltip)));
 
         // Inicializar el adaptador del recyclerView
         cardAdapter = new InstrumentCardAdapter(this, instrumentCardItems, this);
