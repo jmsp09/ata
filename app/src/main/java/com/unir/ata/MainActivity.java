@@ -1,9 +1,12 @@
 package com.unir.ata;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
@@ -16,6 +19,9 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity {
 
 
+    private String TAG = "DevManager";
+    private String KEY = "";
+    private String NAME = "";
     private final int DELAY = 2000;
     private boolean keep = true;
 
@@ -72,6 +78,25 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TunerActivity.class);
         this.startActivity(intent);
 
+    }
+
+    private void logIntent(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) return;
+
+        Log.d(TAG, "======= logIntent ========= %s");
+        Log.d(TAG, "Logging intent data start");
+
+        for (String key : bundle.keySet()) {
+            Log.d("YO", "[" + key + "=" + bundle.get(key) + "]");
+            KEY = bundle.keySet().iterator().next();
+            NAME = String.valueOf(bundle.get(KEY));
+            Log.d("LOL", KEY);
+            Log.d("LOL", NAME);
+            break;
+        }
+
+        Log.d(TAG, "Logging intent data complete");
     }
 
 }
