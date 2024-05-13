@@ -39,7 +39,7 @@ public class Persistence {
     }
 
     public int getInstrument() {
-        return getSettings().getInt(INSTRUMENT, 1);
+        return getSettings().getInt(INSTRUMENT, Tuner.INSTRUMENT_CLARINET);
     }
 
     public void setInstrument(int instrument) {

@@ -128,11 +128,7 @@ public class Navigation {
             Class<?> class2Redirect = TunerActivity.class;
             if (fragment == Navigation.TUNER_ACTIVITY) {
                 class2Redirect = TunerActivity.class;
-            } /*else if (fragment == Navigation.INFO_ACTIVITY) {
-                class2Redirect = TunerActivity.class; //TODO
-            } else if (fragment == Navigation.OPTIONS_ACTIVITY){
-                class2Redirect = InstrumentsActivity.class; //TODO
-            }*/
+            }
 
             if (Navigation.getActivity().getClass() != class2Redirect) {
                 Intent intent = new Intent(getActivity(), class2Redirect);

@@ -11,11 +11,12 @@ public class Tuner {
     private static Tuner tuner;
     protected TunerActivity activity;
     protected Thread tunerProcess;
+    private int instrument;
 
     //Constantes
-    public static final int INSTRUMENT_CLARINET = 1;
-    public static final int INSTRUMENT_BOMBARDINO = 2;
-    public static final int INSTRUMENT_SAXOFON = 3;
+    public static final int INSTRUMENT_CLARINET = 0;
+    public static final int INSTRUMENT_BOMBARDINO = 1;
+    public static final int INSTRUMENT_SAXOFON = 2;
 
 
     private Tuner (TunerActivity activity) {
@@ -32,13 +33,16 @@ public class Tuner {
     public void start() {
         Log.d("!!!********Tuner start ", "!!!********");
         if (this.tunerProcess == null || !this.tunerProcess.isAlive()) {
-            this.tunerProcess = new Thread(TunerProcess.getInstance(this));
+            TunerProcess tp = TunerProcess.getInstance(this);
+            tp.setInstrument(instrument);
+            this.tunerProcess = new Thread(tp);
             this.tunerProcess.start();
         }
     }
 
     public void interrupt() {
-        if (this.tunerProcess != null && !this.tunerProcess.isInterrupted()) {
+        if (this.tunerProcess != null
+                && !this.tunerProcess.isInterrupted()) {
             this.tunerProcess.interrupt();
         }
 
@@ -51,5 +55,9 @@ public class Tuner {
         activity.showTunerResults(note, isError, errMsg);
 
 
+    }
+
+    public void setInstrument(int instrument) {
+        this.instrument = instrument;
     }
 }

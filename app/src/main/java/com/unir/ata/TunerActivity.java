@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -179,6 +181,13 @@ public class TunerActivity extends AppCompatActivity
 
     private void initTuner() {
         tuner = Tuner.getInstance(this);
+
+        //Obtenemos el instrumento seleccionado
+        persistence = Persistence.getInstance(this);
+        instrument = persistence.getInstrument();
+
+        tuner.setInstrument(instrument);
+
         tuner.start();
     }
 
@@ -199,12 +208,21 @@ public class TunerActivity extends AppCompatActivity
             textViewNote.setText(note.getName());
             textViewFreq.setText(note.getFrequency() + " Hz");
             textViewLastFreqs.setText(lastDetections[LastDetections.FREQUENCIES]);
-            textViewLastNotes.setText(lastDetections[LastDetections.NOTES]);
+            textViewLastNotes.setText(lastDetections[LastDetections.NOTES] + LastDetections.getNumEqualNotes());
             textDBs.setText(""+note.getDecibels() + " DB");
 
             //Guardamos las últimas notas en el historial
             LastDetections.addDetection(note);
+
+            if(LastDetections.getNumEqualNotes() == LastDetections.MIN_EQUALS_NOTES) {
+
+                AudioMessage.getInstance(this)
+                        .playMessage("Desviación de " + note.getDeviation(),
+                                AudioMessage.AM_VIBRATION_INFO);
+            }
         }
+
+
     }
 
     public void initInstrumentsFragment() {
@@ -269,8 +287,6 @@ public class TunerActivity extends AppCompatActivity
     private void initSettings(){
 
         persistence = Persistence.getInstance(this);
-
-        instrument = persistence.getInstrument();
         language = persistence.getLanguage();
 
         Locale locale = new Locale(language);

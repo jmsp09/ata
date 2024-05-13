@@ -17,6 +17,7 @@ public class TunerProcess implements Runnable {
 
     //Variables
     private final Tuner tuner;
+    private int instrument = Tuner.INSTRUMENT_CLARINET;
     private final Handler handler;
 
     //Constantes del formato de audio
@@ -34,11 +35,7 @@ public class TunerProcess implements Runnable {
     private final static int SEGMENT_MS = 1000 * SEGMENT / RATE;
     private final static int SEGMENT_BYTES = RATE * SEGMENT_MS / 1000 * 2;
 
-    //Frecuencias mínimas y máximas
-    private final static int MIN_FREQ = 40;
-    private final static int MAX_FREQ = 4200;
-    private final static int MIN_FREQ_BY_RATE = (MIN_FREQ * SEGMENT / RATE);
-    private final static int MAX_FREQ_BY_RATE = (MAX_FREQ * SEGMENT / RATE);
+
 
 
 
@@ -57,6 +54,36 @@ public class TunerProcess implements Runnable {
     public void run() {
 
         Log.d("!!!********Run ", "!!!********");
+
+        //Frecuencias mínimas y máximas
+        final int MIN_FREQ;// = 40;
+        final int MAX_FREQ;// = 4200;
+        final int MIN_DB;
+        switch (this.instrument) {
+            case Tuner.INSTRUMENT_CLARINET:
+                MIN_FREQ = 165;
+                MAX_FREQ = 1568;
+                MIN_DB = 100;
+                break;
+            case Tuner.INSTRUMENT_BOMBARDINO:
+                MIN_FREQ = 49;
+                MAX_FREQ = 587;
+                MIN_DB = 110;
+                break;
+            case Tuner.INSTRUMENT_SAXOFON:
+                MIN_FREQ = 175;
+                MAX_FREQ = 698;
+                MIN_DB = 120;
+                break;
+            default:
+                MIN_FREQ = 40;
+                MAX_FREQ = 4200;
+                MIN_DB = 70;
+                break;
+        }
+
+        final int MIN_FREQ_BY_RATE = (MIN_FREQ * SEGMENT / RATE);
+        final int MAX_FREQ_BY_RATE = (MAX_FREQ * SEGMENT / RATE);
 
         //Damos prioridad para la detección de la nota
         android.os.Process
@@ -145,7 +172,7 @@ public class TunerProcess implements Runnable {
             db = 20 * (float)(Math.log10(bestAmplitude));
 
 
-            if (bestFrequency > MIN_FREQ && db > 60) {
+            if (bestFrequency > MIN_FREQ && db > MIN_DB) {
                 Log.d("!!!********!< DB: " + db, "!!!********!< DB: " + db);
                 Log.d("!!!bestFrequency: " + bestFrequency, "!!!bestFrequency: " + bestFrequency);
                 Log.d("!!!bestAmplitude: " + bestAmplitude, "!!!bestAmplitude: " + bestAmplitude);
@@ -180,7 +207,7 @@ public class TunerProcess implements Runnable {
         octaves = Math.pow(2, octaves);
         Log.d("!!!********!octaves: " + octaves, "!!!********!octaves: " + octaves);
 
-        //La, Si#, Si, Do, Do#, Re...
+        //Notas La, Si#, Si, Do, Do#, Re...
         double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
                                 739.99, 783.99, 830.61};
         String[] noteNames = {"La", "Si#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
@@ -189,13 +216,18 @@ public class TunerProcess implements Runnable {
         if (interval < 0 || interval >= frequencies.length) {
             return note;
         }
+        Log.d("!!!********!octINTERVAL: " + interval + " " + frecuency, "!!!********!fREF: " + frequencies[interval] * octaves);
 
         // Calcular la frecuencia de referencia (si estuviera afinada)
-        double freqReference = frequencies[interval] * octaves;
+        double freqReference = frequencies[interval] * octaves / 2; //TODO Comprobar el partido 2
+        double nearReference = (interval == 11 ? frequencies[interval - 1] : frequencies[interval + 1]) * octaves;
 
         //Rellenamos las propiedades de la nota detectada
         note.setName(noteNames[interval]);
-        note.setDeviation(frecuency - freqReference);
+        //note.setDeviation(frecuency - freqReference);
+        double diffNearReference = Math.abs(nearReference - freqReference);
+        double diff = frecuency - freqReference;
+        note.setDeviation((diff * 100 / diffNearReference));
         note.setDecibels(decibels);
 
         return note;
@@ -211,5 +243,7 @@ public class TunerProcess implements Runnable {
     }
 
 
-
+    public void setInstrument(int instrument) {
+        this.instrument = instrument;
+    }
 }
