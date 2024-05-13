@@ -217,8 +217,9 @@ public class TunerActivity extends AppCompatActivity
             if(LastDetections.getNumEqualNotes() == LastDetections.MIN_EQUALS_NOTES) {
 
                 AudioMessage.getInstance(this)
-                        .playMessage("Desviación de " + note.getDeviation(),
+                        .playMessage("Desviación de " + (int)note.getDeviation() + "%",
                                 AudioMessage.AM_VIBRATION_INFO);
+
             }
         }
 

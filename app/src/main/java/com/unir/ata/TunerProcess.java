@@ -219,15 +219,20 @@ public class TunerProcess implements Runnable {
         Log.d("!!!********!octINTERVAL: " + interval + " " + frecuency, "!!!********!fREF: " + frequencies[interval] * octaves);
 
         // Calcular la frecuencia de referencia (si estuviera afinada)
-        double freqReference = frequencies[interval] * octaves / 2; //TODO Comprobar el partido 2
+        double freqReference = frequencies[interval] * octaves; //TODO Comprobar el partido 2
         double nearReference = (interval == 11 ? frequencies[interval - 1] : frequencies[interval + 1]) * octaves;
 
         //Rellenamos las propiedades de la nota detectada
         note.setName(noteNames[interval]);
         //note.setDeviation(frecuency - freqReference);
         double diffNearReference = Math.abs(nearReference - freqReference);
+
         double diff = frecuency - freqReference;
-        note.setDeviation((diff * 100 / diffNearReference));
+
+        Log.d("!!!********!diffNearReference: " + diffNearReference, "!!!********!diff: " + diff);
+        note.setDeviation((int)Math.round(diff * 100 / diffNearReference));
+
+        Log.d("!!!********!getDeviation: " + note.getDeviation(), "!!!********!diff: " + diff);
         note.setDecibels(decibels);
 
         return note;

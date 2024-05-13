@@ -21,7 +21,7 @@
     <string name="clarinete_description">clarinete</string>
     <string name="saxofon_description">saxofón</string>
     <string name="activity_running">shortcut activity running</string>
-    <string name="am_click_seleccionar">Haz click para seleccionar</string>
+    <string name="am_click_seleccionar">Realice una pulsación larga para seleccionar</string>
     <string name="am_click_afinar">Haz click aquí para empezar a afinar</string>
     <string name="am_click_instrumentos">Haz click para seleccionar tu instrumento</string>
     <string name="not_sound">Sin sonido</string>
