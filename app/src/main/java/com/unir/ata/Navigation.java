@@ -2,7 +2,6 @@ package com.unir.ata;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.ViewFlipper ;
 
@@ -55,15 +54,11 @@ public class Navigation {
 
 
             if (homeButton != null) {
-                homeButton.setOnClickListener(v -> {
-                    AudioMessage.getInstance(activity)
-                            .playMessage((String) Objects.requireNonNull(homeButton.getTooltipText()),
-                                    AudioMessage.AM_VIBRATION_INFO);
-
-                });
+                homeButton.setOnClickListener(v -> AudioMessage.getInstance(activity)
+                        .playMessage((String) Objects.requireNonNull(homeButton.getTooltipText()),
+                                AudioMessage.AM_VIBRATION_INFO));
 
                 homeButton.setOnLongClickListener(v -> {
-                    Log.d("!!&&","!!&&"+ (String) homeButton.getTooltipText());
                     AudioMessage.getInstance(activity)
                             .playMessage((String) homeButton.getContentDescription(),
                                     AudioMessage.AM_VIBRATION_CONFIRM);
@@ -73,12 +68,9 @@ public class Navigation {
             }
 
             if (infoButton != null) {
-                infoButton.setOnClickListener(v -> {
-                    AudioMessage.getInstance(activity)
-                            .playMessage((String) Objects.requireNonNull(infoButton.getTooltipText()),
-                                    AudioMessage.AM_VIBRATION_INFO);
-
-                });
+                infoButton.setOnClickListener(v -> AudioMessage.getInstance(activity)
+                        .playMessage((String) Objects.requireNonNull(infoButton.getTooltipText()),
+                                AudioMessage.AM_VIBRATION_INFO));
 
                 infoButton.setOnLongClickListener(v -> {
                     AudioMessage.getInstance(activity)
@@ -91,12 +83,9 @@ public class Navigation {
 
 
             if (optionsButton != null) {
-                optionsButton.setOnClickListener(v -> {
-                    AudioMessage.getInstance(activity)
-                            .playMessage((String) Objects.requireNonNull(optionsButton.getTooltipText()),
-                                    AudioMessage.AM_VIBRATION_INFO);
-
-                });
+                optionsButton.setOnClickListener(v -> AudioMessage.getInstance(activity)
+                        .playMessage((String) Objects.requireNonNull(optionsButton.getTooltipText()),
+                                AudioMessage.AM_VIBRATION_INFO));
 
                 optionsButton.setOnLongClickListener(v -> {
                     AudioMessage.getInstance(activity)

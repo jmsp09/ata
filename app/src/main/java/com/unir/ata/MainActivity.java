@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         //Mantenemos la pantalla encendida
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-       //Comprobamos si la persona tiene el movil silenciado. Es importante que pueda recibir el feedback auditivo
+       //Comprobamos si la persona tiene el móvil silenciado. Es importante que pueda recibir el feedback auditivo
         if(isSoundMuted(this)) {
             showTurnUpVolumeMessage();
         } else {

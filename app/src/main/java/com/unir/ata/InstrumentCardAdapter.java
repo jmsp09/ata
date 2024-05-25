@@ -2,14 +2,7 @@ package com.unir.ata;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,7 +19,6 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
     private final List<InstrumentCardItem> instrumentCardItemList;
     private final OnCardItemClickListener listener;
     private Context context;
-    private View lastTouchedView;
 
     public interface OnCardItemClickListener {
         //void onImageClick(int position);

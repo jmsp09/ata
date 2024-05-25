@@ -1,8 +1,5 @@
 package com.unir.ata;
 
-import android.util.Log;
-
-import java.util.HashSet;
 import java.util.LinkedList;
 
 public class LastDetections {

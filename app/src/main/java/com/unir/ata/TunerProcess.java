@@ -10,9 +10,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class TunerProcess implements Runnable {
 
     //Instancia única de la clase
@@ -167,8 +164,7 @@ public class TunerProcess implements Runnable {
                 Log.d("!!!bestAmplitude: " + bestAmplitude, "!!!bestAmplitude: " + bestAmplitude);
                 Log.d("!!!!!!!!!!!!", "!!!!!!!!!!!!!!!! ");
                 postResultsByHandler(
-                        getDetectedNote(bestFrequency, db, NOTE_NAMES, INSTRUMENT_FREQ_REF,
-                                MAX_DEVIATION, NOTE_REF),
+                        getDetectedNote(bestFrequency, db, INSTRUMENT_FREQ_REF, MAX_DEVIATION, NOTE_REF),
                         false, null);
             } else {
                 // No se recoge ningún sonido
@@ -180,9 +176,8 @@ public class TunerProcess implements Runnable {
         audioRecord.release();
     }
 
-    public DetectedNote getDetectedNote(double frecuency, double decibels, String[] noteNames,
-                                        double instrumentFreqReference, double maxDeviation,
-                                        String noteRef) {
+    public DetectedNote getDetectedNote(double frecuency, double decibels, double instrumentFreqReference,
+                                        double maxDeviation, String noteRef) {
 
         int interval;
         double octaves;

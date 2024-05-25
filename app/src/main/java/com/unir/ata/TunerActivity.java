@@ -256,11 +256,6 @@ public class TunerActivity extends AppCompatActivity
             }
 
         } else {
-            //textViewNote.setText(note.getName());
-            /*textViewFreq.setText(note.getFrequency() + " Hz");
-            textViewLastFreqs.setText(lastDetections[LastDetections.FREQUENCIES]);
-            textViewLastNotes.setText(lastDetections[LastDetections.NOTES] + LastDetections.getNumEqualNotes());
-            textDBs.setText(""+note.getDecibels() + " DB");*/
 
             //Guardamos las últimas notas en el historial
             LastDetections.addDetection(note);
@@ -416,14 +411,11 @@ public class TunerActivity extends AppCompatActivity
         // Inicializar card items
         instrumentCardItems = new ArrayList<>();
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.clarinete,
-                getString(R.string.clarinete), getString(R.string.clarinete_description),
-                getString(R.string.clarinete_tooltip)));
+                getString(R.string.clarinete), getString(R.string.clarinete_description)));
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.bombardino,
-                getString(R.string.bombardino), getString(R.string.bombardino_description),
-                getString(R.string.bombardino_tooltip)));
+                getString(R.string.bombardino), getString(R.string.bombardino_description)));
         instrumentCardItems.add(new InstrumentCardItem(R.drawable.saxofon,
-                getString(R.string.saxofon), getString(R.string.saxofon_description),
-                getString(R.string.saxofon_tooltip)));
+                getString(R.string.saxofon), getString(R.string.saxofon_description)));
 
         // Inicializar el adaptador del recyclerView
         cardAdapter = new InstrumentCardAdapter(this, instrumentCardItems, this);

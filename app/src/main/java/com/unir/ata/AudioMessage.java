@@ -14,7 +14,6 @@ public class AudioMessage {
     private final Context context;
     private static TextToSpeech textToSpeech;
     private static boolean statusOK = false;
-    private static String lastMessage = "";
     private static boolean isSpeaking = false;
 
 
@@ -65,7 +64,6 @@ public class AudioMessage {
 
         if (statusOK && (typeVibration == AM_VIBRATION_CONFIRM || !isSpeaking)) {
             isSpeaking = true;
-            lastMessage = text;
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
 
             switch (typeVibration) {
