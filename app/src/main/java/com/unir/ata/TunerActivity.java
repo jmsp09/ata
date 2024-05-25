@@ -222,7 +222,10 @@ public class TunerActivity extends AppCompatActivity
 
     public void showTunerResults(DetectedNote note, boolean isError, String errMsg) {
 
-        String[] lastDetections =  LastDetections.print();
+        //Si la aplicación está hablando, no mostramos las desviaciones de afinacion
+        if (AudioMessage.getInstance(this).isSpeaking()) {
+            return;
+        }
 
         //Parámetros para dibujar la barra de afinación
         LinearLayout.LayoutParams layoutParamsHidden = new LinearLayout.LayoutParams(
@@ -243,7 +246,9 @@ public class TunerActivity extends AppCompatActivity
             textViewNote.setText(errMsg);
 
 
-            if(LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES_TO_PRINT) {
+            if(LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES_TO_PRINT
+                    || LastDetections.getlastItems().isEmpty()) {
+
                 //Cambiamos altura barra
                 deviationBottom1.setLayoutParams(layoutParamsHidden);
                 deviationBottom2.setLayoutParams(layoutParamsAll);
@@ -260,7 +265,6 @@ public class TunerActivity extends AppCompatActivity
             //Guardamos las últimas notas en el historial
             LastDetections.addDetection(note);
 
-
             if (LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES_TO_PRINT) {
 
                 String msgVeryModifier = "";
@@ -270,8 +274,7 @@ public class TunerActivity extends AppCompatActivity
 
                 if (Math.abs(deviation) < 10) {
 
-
-                    textViewNote.setText("Afinación correcta");
+                    textViewNote.setText(this.getString(R.string.Instrument_in_tune));
                     isInstrumentInTune = true;
 
                     deviationBottom1.setLayoutParams(layoutParamsHidden);
@@ -292,10 +295,10 @@ public class TunerActivity extends AppCompatActivity
                             0,
                             deviation2
                     );
-                    boolean bigDeviation =  deviation > 50? true : false;
+                    boolean bigDeviation = deviation > 50;
                     int deviationColor =  bigDeviation ? Color.RED : Color.BLUE;
-                    msgVeryModifier = bigDeviation? " muy" : " un poco";
-                    msgDirectionModifier = directionTop? " alta." : " baja.";
+                    msgVeryModifier = bigDeviation? getString(R.string.very) : getString(R.string.a_bit);
+                    msgDirectionModifier = directionTop? getString(R.string.high) : getString(R.string.low);
 
 
                     if(directionTop) {
@@ -322,11 +325,11 @@ public class TunerActivity extends AppCompatActivity
                     }
 
                     //Mostramos el texto adecuado
-                    textViewNote.setText("Afinando en " + note.getName());
+                    textViewNote.setText(getString(R.string.tuning_on) + note.getName());
 
                 }
 
-                if (LastDetections.getNumEqualNotes() == LastDetections.MIN_EQUALS_NOTES) {
+                if (LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES) {
 
                     //Afinación muy alta // A
                         /*AudioMessage.getInstance(this)
@@ -335,13 +338,15 @@ public class TunerActivity extends AppCompatActivity
 
                     if (isInstrumentInTune) {
                         AudioMessage.getInstance(this)
-                                .playMessage("El instrumento está correctamente afinado",
+                                .playMessage(getString(R.string.instrument_is_on_tune),
                                         AudioMessage.AM_VIBRATION_INFO);
                     } else {
                         AudioMessage.getInstance(this)
-                                .playMessage("Afinación" + msgVeryModifier + msgDirectionModifier ,
+                                .playMessage(getString(R.string.tune) + msgVeryModifier + msgDirectionModifier ,
                                         AudioMessage.AM_VIBRATION_INFO);
                     }
+
+                    LastDetections.reset();
 
                 }
 
@@ -386,7 +391,7 @@ public class TunerActivity extends AppCompatActivity
 
                 AudioMessage.getInstance(this)
                         .playMessage("Desviación de " + (int)note.getDeviation() + "%",
-                                AudioMessage.AM_VIBRATION_INFO); //TODO modificar mensaje
+                                AudioMessage.AM_VIBRATION_INFO);
 
             }
         }

@@ -209,7 +209,7 @@ public class TunerProcess implements Runnable {
         Log.d("!!!********!octINTERVAL: " + interval + " " + frecuency, "!!!********!fREF: " + frequencies[interval] * octaves);
 
         // Calcular la frecuencia de referencia (si estuviera afinada)
-        double freqReference = frequencies[interval] * octaves; //TODO Comprobar el partido 2
+        double freqReference = frequencies[interval] * octaves;
         double nearReference = (interval == 11 ? frequencies[interval - 1] : frequencies[interval + 1]) * octaves;
 
         //Rellenamos las propiedades de la nota detectada

@@ -14,7 +14,6 @@ public class AudioMessage {
     private final Context context;
     private static TextToSpeech textToSpeech;
     private static boolean statusOK = false;
-    private static boolean isSpeaking = false;
 
 
     //Mensajes
@@ -43,27 +42,18 @@ public class AudioMessage {
     private void init() {
 
         //Inicializamos sintetizador de texto
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    Persistence persistence = Persistence.getInstance(context);
-
-                    //textToSpeech.setLanguage(Locale.); //TODO
-                    statusOK = true;
-                }
+        textToSpeech = new TextToSpeech(context, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                statusOK = true;
             }
         });
     }
 
     protected void playMessage(@NonNull String text, int typeVibration) {
 
-        if (!textToSpeech.isSpeaking()) {
-            isSpeaking = false;
-        }
 
-        if (statusOK && (typeVibration == AM_VIBRATION_CONFIRM || !isSpeaking)) {
-            isSpeaking = true;
+
+        if (statusOK && (typeVibration == AM_VIBRATION_CONFIRM || !textToSpeech.isSpeaking())) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
 
             switch (typeVibration) {
@@ -105,6 +95,10 @@ public class AudioMessage {
 
             vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, repeatIndex));
         }
+    }
+
+    protected boolean isSpeaking() {
+        return textToSpeech.isSpeaking();
     }
 
 }

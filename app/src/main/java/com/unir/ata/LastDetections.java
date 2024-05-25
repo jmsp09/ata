@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 public class LastDetections {
 
-    private static final LinkedList<DetectedNote> lastItems = new LinkedList<>();
+    private static LinkedList<DetectedNote> lastItems = new LinkedList<>();
     private static int numEqualNotes = 1;
-    protected static int MIN_EQUALS_NOTES = 4;
-    protected static int MIN_EQUALS_NOTES_TO_PRINT = 1 ;
-    private static int MAX_EQUALS_NOTES = MIN_EQUALS_NOTES * 3;
+    protected static final int MIN_EQUALS_NOTES = 4;
+    protected static final int MIN_EQUALS_NOTES_TO_PRINT = 1 ;
+    private static final int MAX_EQUALS_NOTES = MIN_EQUALS_NOTES * 3;
     private static final int MAX_ITEMS = 10;
 
     public static void addDetection(DetectedNote item) {
@@ -43,6 +43,10 @@ public class LastDetections {
 
     public static int getNumEqualNotes() {
         return numEqualNotes;
+    }
+
+    protected static void reset() {
+        numEqualNotes = 1;
     }
     
 }
