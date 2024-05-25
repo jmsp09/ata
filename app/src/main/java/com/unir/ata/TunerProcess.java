@@ -54,7 +54,8 @@ public class TunerProcess implements Runnable {
         Log.d("!!!********Run ", "!!!********");
 
         //Poperties del instrumento
-        Instrument.Properties instrumentProperties = Instrument.getInstrumentProperties(this.instrument);
+        Instrument.Properties instrumentProperties =
+                Instrument.getInstrumentProperties(this.instrument, this.tuner.activity);
 
         //Transposición
         final String[] NOTE_NAMES = instrumentProperties.NOTE_NAMES;

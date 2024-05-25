@@ -1,6 +1,8 @@
 package com.unir.ata;
 
 
+import android.content.Context;
+
 public class Instrument {
 
     //Constantes
@@ -9,7 +11,7 @@ public class Instrument {
     public static final int INSTRUMENT_SAXOFON = 2;
 
 
-    public static Properties getInstrumentProperties(int instrument) {
+    public static Properties getInstrumentProperties(int instrument, Context context) {
 
         //Transposición
         final String[] NOTE_NAMES;
@@ -29,38 +31,86 @@ public class Instrument {
             case Instrument.INSTRUMENT_CLARINET:
                 MIN_FREQ = 165;
                 MAX_FREQ = 1568;
-                MIN_DB = 60; //100 //TODO
-                NOTE_NAMES = new String[]{"Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#"};
+                MIN_DB = 90;
+                NOTE_NAMES = new String[]{
+                        context.getResources().getString(R.string.nota_si),
+                        context.getResources().getString(R.string.nota_do),
+                        context.getResources().getString(R.string.nota_do_sostenido),
+                        context.getResources().getString(R.string.nota_re),
+                        context.getResources().getString(R.string.nota_re_sostenido),
+                        context.getResources().getString(R.string.nota_mi),
+                        context.getResources().getString(R.string.nota_fa),
+                        context.getResources().getString(R.string.nota_fa_sostenido),
+                        context.getResources().getString(R.string.nota_sol),
+                        context.getResources().getString(R.string.nota_sol_sostenido),
+                        context.getResources().getString(R.string.nota_la),
+                        context.getResources().getString(R.string.nota_la_sostenido)};
                 FREQ_REF = 440.0;
                 MAX_DEVIATION = 26.16;
-                NOTE_REF = "Si";
+                NOTE_REF = context.getResources().getString(R.string.nota_si);
                 break;
             case Instrument.INSTRUMENT_BOMBARDINO:
                 MIN_FREQ = 49;
                 MAX_FREQ = 587;
-                MIN_DB = 110;
-                NOTE_NAMES = new String[]{"Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#", "La", "La#"};
+                MIN_DB = 100;
+                NOTE_NAMES = new String[]{
+                        context.getResources().getString(R.string.nota_si),
+                        context.getResources().getString(R.string.nota_do),
+                        context.getResources().getString(R.string.nota_do_sostenido),
+                        context.getResources().getString(R.string.nota_re),
+                        context.getResources().getString(R.string.nota_re_sostenido),
+                        context.getResources().getString(R.string.nota_mi),
+                        context.getResources().getString(R.string.nota_fa),
+                        context.getResources().getString(R.string.nota_fa_sostenido),
+                        context.getResources().getString(R.string.nota_sol),
+                        context.getResources().getString(R.string.nota_sol_sostenido),
+                        context.getResources().getString(R.string.nota_la),
+                        context.getResources().getString(R.string.nota_la_sostenido)};
                 FREQ_REF = 440.0;
                 MAX_DEVIATION = 26.16;
-                NOTE_REF = "Si";
+                NOTE_REF = context.getResources().getString(R.string.nota_si);
                 break;
             case Instrument.INSTRUMENT_SAXOFON:
                 MIN_FREQ = 175;
                 MAX_FREQ = 698;
-                MIN_DB = 120;
-                NOTE_NAMES = new String[]{"Fa#", "Sol", "Sol#", "La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa"};
+                MIN_DB = 110;
+                NOTE_NAMES = new String[]{
+                        context.getResources().getString(R.string.nota_fa_sostenido),
+                        context.getResources().getString(R.string.nota_sol),
+                        context.getResources().getString(R.string.nota_sol_sostenido),
+                        context.getResources().getString(R.string.nota_la),
+                        context.getResources().getString(R.string.nota_la_sostenido),
+                        context.getResources().getString(R.string.nota_si),
+                        context.getResources().getString(R.string.nota_do),
+                        context.getResources().getString(R.string.nota_do_sostenido),
+                        context.getResources().getString(R.string.nota_re),
+                        context.getResources().getString(R.string.nota_re_sostenido),
+                        context.getResources().getString(R.string.nota_mi),
+                        context.getResources().getString(R.string.nota_fa)};
                 FREQ_REF = 440.0;
                 MAX_DEVIATION = 26.16;
-                NOTE_REF = "Fa#";
+                NOTE_REF = context.getResources().getString(R.string.nota_fa_sostenido);
                 break;
             default:
                 MIN_FREQ = 40;
                 MAX_FREQ = 4200;
                 MIN_DB = 70;
-                NOTE_NAMES = new String[]{"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
+                NOTE_NAMES = new String[]{
+                        context.getResources().getString(R.string.nota_la),
+                        context.getResources().getString(R.string.nota_la_sostenido),
+                        context.getResources().getString(R.string.nota_si),
+                        context.getResources().getString(R.string.nota_do),
+                        context.getResources().getString(R.string.nota_do_sostenido),
+                        context.getResources().getString(R.string.nota_re),
+                        context.getResources().getString(R.string.nota_re_sostenido),
+                        context.getResources().getString(R.string.nota_mi),
+                        context.getResources().getString(R.string.nota_fa),
+                        context.getResources().getString(R.string.nota_fa_sostenido),
+                        context.getResources().getString(R.string.nota_sol),
+                        context.getResources().getString(R.string.nota_sol_sostenido),};
                 FREQ_REF = 440.0;
                 MAX_DEVIATION = 26.16;
-                NOTE_REF = "Si";
+                NOTE_REF = context.getResources().getString(R.string.nota_la);
                 break;
         }
 
