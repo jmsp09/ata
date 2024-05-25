@@ -1,13 +1,19 @@
 package com.unir.ata;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
@@ -67,12 +73,50 @@ public class MainActivity extends AppCompatActivity {
         //Mantenemos la pantalla encendida
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+       //Comprobamos si la persona tiene el movil silenciado. Es importante que pueda recibir el feedback auditivo
+        if(isSoundMuted(this)) {
+            showTurnUpVolumeMessage();
+        } else {
+            redirect();
+        }
+    }
+
+    private void showTurnUpVolumeMessage() {
+
+        AppCompatButton acceptButton = findViewById(R.id.acceptButton);
+        acceptButton.setVisibility(View.VISIBLE);
+        acceptButton.setOnClickListener(v -> redirect());
+
+        TextView textView = findViewById(R.id.textViewIni);
+        textView.setText(R.string.turnVolumeUp);
+    }
+
+
+    private void redirect() {
+
         //Redirect
         Navigation.redirect(Navigation.TUNER_ACTIVITY);
         Intent intent = new Intent(this, TunerActivity.class);
         this.startActivity(intent);
-
     }
 
+    public static boolean isSoundMuted(Context context) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        if (audioManager != null) {
+            int ringerMode = audioManager.getRingerMode();
+            if (ringerMode == AudioManager.RINGER_MODE_SILENT || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
+                return true; // El dispositivo está silenciado o en modo vibración
+            }
+
+            //Comprobamos si está el volumen al 0
+            int musicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            if (musicVolume == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }
