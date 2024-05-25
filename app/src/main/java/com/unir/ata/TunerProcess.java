@@ -10,6 +10,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class TunerProcess implements Runnable {
 
     //Instancia única de la clase
@@ -17,7 +20,7 @@ public class TunerProcess implements Runnable {
 
     //Variables
     private final Tuner tuner;
-    private int instrument = Tuner.INSTRUMENT_CLARINET;
+    private int instrument = Instrument.INSTRUMENT_CLARINET;
     private final Handler handler;
 
     //Constantes del formato de audio
@@ -37,8 +40,6 @@ public class TunerProcess implements Runnable {
 
 
 
-
-
     private TunerProcess(Tuner tuner) {
         this.tuner = tuner;
         this.handler = new Handler();
@@ -55,35 +56,23 @@ public class TunerProcess implements Runnable {
 
         Log.d("!!!********Run ", "!!!********");
 
-        //Frecuencias mínimas y máximas
-        final int MIN_FREQ;// = 40;
-        final int MAX_FREQ;// = 4200;
-        final int MIN_DB;
-        switch (this.instrument) {
-            case Tuner.INSTRUMENT_CLARINET:
-                MIN_FREQ = 165;
-                MAX_FREQ = 1568;
-                MIN_DB = 100;
-                break;
-            case Tuner.INSTRUMENT_BOMBARDINO:
-                MIN_FREQ = 49;
-                MAX_FREQ = 587;
-                MIN_DB = 110;
-                break;
-            case Tuner.INSTRUMENT_SAXOFON:
-                MIN_FREQ = 175;
-                MAX_FREQ = 698;
-                MIN_DB = 120;
-                break;
-            default:
-                MIN_FREQ = 40;
-                MAX_FREQ = 4200;
-                MIN_DB = 70;
-                break;
-        }
+        //Poperties del instrumento
+        Instrument.Properties instrumentProperties = Instrument.getInstrumentProperties(this.instrument);
 
+        //Transposición
+        final String[] NOTE_NAMES = instrumentProperties.NOTE_NAMES;
+        final double INSTRUMENT_FREQ_REF = instrumentProperties.FREQ_REF;
+        final String NOTE_REF = instrumentProperties.NOTE_REF;
+
+        //Frecuencias mínimas y máximas
+        final int MIN_FREQ = instrumentProperties.MIN_FREQ;
+        final int MAX_FREQ = instrumentProperties.MAX_FREQ;
+        final int MIN_DB = instrumentProperties.MIN_DB;
         final int MIN_FREQ_BY_RATE = (MIN_FREQ * SEGMENT / RATE);
         final int MAX_FREQ_BY_RATE = (MAX_FREQ * SEGMENT / RATE);
+
+        //Desviación
+        final double MAX_DEVIATION = instrumentProperties.MAX_DEVIATION;
 
         //Damos prioridad para la detección de la nota
         android.os.Process
@@ -177,7 +166,10 @@ public class TunerProcess implements Runnable {
                 Log.d("!!!bestFrequency: " + bestFrequency, "!!!bestFrequency: " + bestFrequency);
                 Log.d("!!!bestAmplitude: " + bestAmplitude, "!!!bestAmplitude: " + bestAmplitude);
                 Log.d("!!!!!!!!!!!!", "!!!!!!!!!!!!!!!! ");
-                postResultsByHandler(getDetectedNote(bestFrequency, db), false, null);
+                postResultsByHandler(
+                        getDetectedNote(bestFrequency, db, NOTE_NAMES, INSTRUMENT_FREQ_REF,
+                                MAX_DEVIATION, NOTE_REF),
+                        false, null);
             } else {
                 // No se recoge ningún sonido
                 postResultsByHandler(null, true, tuner.activity.getString(R.string.not_sound));
@@ -188,7 +180,9 @@ public class TunerProcess implements Runnable {
         audioRecord.release();
     }
 
-    public DetectedNote getDetectedNote(double frecuency, double decibels) {
+    public DetectedNote getDetectedNote(double frecuency, double decibels, String[] noteNames,
+                                        double instrumentFreqReference, double maxDeviation,
+                                        String noteRef) {
 
         int interval;
         double octaves;
@@ -210,7 +204,7 @@ public class TunerProcess implements Runnable {
         //Notas La, Si#, Si, Do, Do#, Re...
         double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
                                 739.99, 783.99, 830.61};
-        String[] noteNames = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
+        //String[] noteNames = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
 
         // Asegurarse de que el intervalo esté dentro del rango
         if (interval < 0 || interval >= frequencies.length) {
@@ -223,7 +217,10 @@ public class TunerProcess implements Runnable {
         double nearReference = (interval == 11 ? frequencies[interval - 1] : frequencies[interval + 1]) * octaves;
 
         //Rellenamos las propiedades de la nota detectada
-        note.setName(noteNames[interval]);
+        //note.setName(noteNames[interval]); //Nota real
+        note.setName(noteRef);
+
+        //Calculamos la desviacion sobre la frecuencia más cercana
         //note.setDeviation(frecuency - freqReference);
         double diffNearReference = Math.abs(nearReference - freqReference);
 
@@ -232,6 +229,16 @@ public class TunerProcess implements Runnable {
         Log.d("!!!********!diffNearReference: " + diffNearReference, "!!!********!diff: " + diff);
         note.setDeviation((int)Math.round(diff * 100 / diffNearReference));
 
+        //Buscamos la diferencia respecto la frecuencia buscada por el instrumento
+        double diffInstrument = frecuency - instrumentFreqReference;
+        double deviationInstrument = diffInstrument * 100 / maxDeviation;
+        if (Math.abs(deviationInstrument) > 100) {
+            deviationInstrument = 100 * (deviationInstrument < 0? -1 : 1);
+        }
+        note.setDeviationInstrument(deviationInstrument);
+
+
+        //Marcamos los decibelios
         Log.d("!!!********!getDeviation: " + note.getDeviation(), "!!!********!diff: " + diff);
         note.setDecibels(decibels);
 

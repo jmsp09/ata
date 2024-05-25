@@ -152,7 +152,7 @@ public class TunerActivity extends AppCompatActivity
                         "Es necesario grabar a través del micrófono para poder afinar"
                         , Toast.LENGTH_LONG).show();
 
-                //Requerimos al usuario el p5rmiso
+                //Requerimos al usuario el permiso
                 ActivityCompat.requestPermissions(this,
                         new String[] { Manifest.permission.RECORD_AUDIO},
                         PERMISSION_RECORD_AUDIO);
@@ -223,13 +223,40 @@ public class TunerActivity extends AppCompatActivity
     public void showTunerResults(DetectedNote note, boolean isError, String errMsg) {
 
         String[] lastDetections =  LastDetections.print();
+
+        //Parámetros para dibujar la barra de afinación
+        LinearLayout.LayoutParams layoutParamsHidden = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                0f
+        );
+        LinearLayout.LayoutParams layoutParamsAll = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                1f
+        );
+
+        //Sin sonido
         if (isError || note == null) {
             errMsg = errMsg == null || errMsg.isEmpty() ?
                     this.getString(R.string.not_sound) : errMsg;
             textViewNote.setText(errMsg);
-            //textViewFreq.setText("");
+
+
+            if(LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES_TO_PRINT) {
+                //Cambiamos altura barra
+                deviationBottom1.setLayoutParams(layoutParamsHidden);
+                deviationBottom2.setLayoutParams(layoutParamsAll);
+                deviationTop1.setLayoutParams(layoutParamsHidden);
+                deviationTop2.setLayoutParams(layoutParamsAll);
+
+                //Cambiamos colores
+                deviationBottom1.setBackgroundColor(Color.BLACK);
+                deviationTop1.setBackgroundColor(Color.BLACK);
+            }
+
         } else {
-            textViewNote.setText(note.getName());
+            //textViewNote.setText(note.getName());
             /*textViewFreq.setText(note.getFrequency() + " Hz");
             textViewLastFreqs.setText(lastDetections[LastDetections.FREQUENCIES]);
             textViewLastNotes.setText(lastDetections[LastDetections.NOTES] + LastDetections.getNumEqualNotes());
@@ -239,39 +266,25 @@ public class TunerActivity extends AppCompatActivity
             LastDetections.addDetection(note);
 
 
-            LinearLayout.LayoutParams layoutParamsHidden = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    0,
-                    0f
-            );
-            LinearLayout.LayoutParams layoutParamsAll = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    0,
-                    1f
-            );
-
             if (LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES_TO_PRINT) {
 
-                int deviation = (int) note.getDeviation();
+                String msgVeryModifier = "";
+                String msgDirectionModifier = "";
+                int deviation = (int) note.getDeviationInstrument();
+                boolean isInstrumentInTune = false;
 
                 if (Math.abs(deviation) < 10) {
 
-                    AudioMessage.getInstance(this)
-                            .playMessage("El instrumento está correctamente afinado",
-                                    AudioMessage.AM_VIBRATION_INFO);
 
+                    textViewNote.setText("Afinación correcta");
+                    isInstrumentInTune = true;
 
-                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            0,
-                            1f
-                    );
                     deviationBottom1.setLayoutParams(layoutParamsHidden);
                     deviationBottom2.setLayoutParams(layoutParamsAll);
                     deviationTop1.setLayoutParams(layoutParamsHidden);
                     deviationTop2.setLayoutParams(layoutParamsAll);
                 } else {
-
+                    boolean directionTop = deviation > 0;
                     deviation = Math.abs(deviation);
                     int deviation2 = 100 - deviation;
                     LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(
@@ -284,10 +297,13 @@ public class TunerActivity extends AppCompatActivity
                             0,
                             deviation2
                     );
-                    int deviationColor = deviation > 25? Color.RED : Color.BLUE;
+                    boolean bigDeviation =  deviation > 50? true : false;
+                    int deviationColor =  bigDeviation ? Color.RED : Color.BLUE;
+                    msgVeryModifier = bigDeviation? " muy" : " un poco";
+                    msgDirectionModifier = directionTop? " alta." : " baja.";
 
 
-                    if(deviation > 0) {
+                    if(directionTop) {
                         //Cambiamos altura barra
                         deviationBottom1.setLayoutParams(layoutParamsHidden);
                         deviationBottom2.setLayoutParams(layoutParamsAll);
@@ -297,6 +313,7 @@ public class TunerActivity extends AppCompatActivity
                         //Cambiamos colores
                         deviationBottom1.setBackgroundColor(Color.BLACK);
                         deviationTop1.setBackgroundColor(deviationColor);
+
                     } else {
                         //Cambiamos altura barra
                         deviationBottom1.setLayoutParams(layoutParams1);
@@ -308,15 +325,32 @@ public class TunerActivity extends AppCompatActivity
                         deviationBottom1.setBackgroundColor(deviationColor);
                         deviationTop1.setBackgroundColor(Color.BLACK);
                     }
+
+                    //Mostramos el texto adecuado
+                    textViewNote.setText("Afinando en " + note.getName());
+
                 }
 
                 if (LastDetections.getNumEqualNotes() == LastDetections.MIN_EQUALS_NOTES) {
 
-                    AudioMessage.getInstance(this)
-                            .playMessage("Desviación de " + deviation + "%",
-                                    AudioMessage.AM_VIBRATION_INFO); //TODO modificar mensaje
+                    //Afinación muy alta // A
+                        /*AudioMessage.getInstance(this)
+                                .playMessage("Desviación de " + deviation + "%",
+                                        AudioMessage.AM_VIBRATION_INFO); */
+
+                    if (isInstrumentInTune) {
+                        AudioMessage.getInstance(this)
+                                .playMessage("El instrumento está correctamente afinado",
+                                        AudioMessage.AM_VIBRATION_INFO);
+                    } else {
+                        AudioMessage.getInstance(this)
+                                .playMessage("Afinación" + msgVeryModifier + msgDirectionModifier ,
+                                        AudioMessage.AM_VIBRATION_INFO);
+                    }
 
                 }
+
+
             } else {
                 //Cambiamos altura barra
                 deviationBottom1.setLayoutParams(layoutParamsHidden);
@@ -333,6 +367,8 @@ public class TunerActivity extends AppCompatActivity
 
     }
 
+
+/*
     public void showTunerResults2(DetectedNote note, boolean isError, String errMsg) {
 
         String[] lastDetections =  LastDetections.print();
@@ -361,7 +397,7 @@ public class TunerActivity extends AppCompatActivity
         }
 
 
-    }
+    }*/
 
     public void initInstrumentsFragment() {
 

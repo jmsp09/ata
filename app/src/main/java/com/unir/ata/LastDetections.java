@@ -9,7 +9,7 @@ public class LastDetections {
 
     private static final LinkedList<DetectedNote> lastItems = new LinkedList<>();
     private static int numEqualNotes = 1;
-    protected static int MIN_EQUALS_NOTES = 5;
+    protected static int MIN_EQUALS_NOTES = 4;
     protected static int MIN_EQUALS_NOTES_TO_PRINT = 1 ;
     private static int MAX_EQUALS_NOTES = MIN_EQUALS_NOTES * 3;
     private static final int MAX_ITEMS = 10;

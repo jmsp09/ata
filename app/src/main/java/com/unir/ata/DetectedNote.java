@@ -5,6 +5,7 @@ public class DetectedNote {
     private String name;
     private double frequency;
     private double deviation;
+    private double instrumentDeviation;
 
 
 
@@ -44,4 +45,12 @@ public class DetectedNote {
     public void setDecibels(double decibels) {
         this.decibels = decibels;
     }
+
+    public double getDeviationInstrument() {
+        return instrumentDeviation;
+    }
+    public void setDeviationInstrument(double deviation) {
+        this.instrumentDeviation = deviation;
+    }
+
 }
