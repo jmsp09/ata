@@ -13,10 +13,6 @@ public class Tuner {
     protected Thread tunerProcess;
     private int instrument;
 
-    //Constantes
-    public static final int INSTRUMENT_CLARINET = 0;
-    public static final int INSTRUMENT_BOMBARDINO = 1;
-    public static final int INSTRUMENT_SAXOFON = 2;
 
 
     private Tuner (TunerActivity activity) {
