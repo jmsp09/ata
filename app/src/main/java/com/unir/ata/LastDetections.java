@@ -10,8 +10,6 @@ public class LastDetections {
     protected static int MIN_EQUALS_NOTES_TO_PRINT = 1 ;
     private static int MAX_EQUALS_NOTES = MIN_EQUALS_NOTES * 3;
     private static final int MAX_ITEMS = 10;
-    protected static final int NOTES = 0;
-    protected static final int FREQUENCIES = 1;
 
     public static void addDetection(DetectedNote item) {
 

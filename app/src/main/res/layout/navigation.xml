@@ -99,6 +99,4 @@
             android:layout_marginTop="8dp" />
     </LinearLayout>
 
-    <!-- Add more menu items as needed -->
-
 </LinearLayout>

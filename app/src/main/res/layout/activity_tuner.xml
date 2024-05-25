@@ -8,7 +8,6 @@
     android:background="@color/background"
     tools:context=".TunerActivity">
 
-    <!--<include layout="@layout/toolbar" />-->
     <include layout="@layout/navigation" />
 
     <ViewFlipper
