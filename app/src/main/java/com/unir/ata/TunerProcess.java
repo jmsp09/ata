@@ -210,7 +210,7 @@ public class TunerProcess implements Runnable {
         //Notas La, Si#, Si, Do, Do#, Re...
         double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
                                 739.99, 783.99, 830.61};
-        String[] noteNames = {"La", "Si#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
+        String[] noteNames = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
 
         // Asegurarse de que el intervalo esté dentro del rango
         if (interval < 0 || interval >= frequencies.length) {

@@ -4,13 +4,17 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -39,6 +43,10 @@ public class TunerActivity extends AppCompatActivity
 
     //Elementos visuales
     private TextView textViewNote;
+    private LinearLayout deviationTop1;
+    private LinearLayout deviationTop2;
+    private LinearLayout deviationBottom1;
+    private LinearLayout deviationBottom2;
     private TextView textViewFreq;
     private TextView textViewLastNotes;
     private TextView textViewLastFreqs;
@@ -79,6 +87,18 @@ public class TunerActivity extends AppCompatActivity
 
         //Inicializamos afinador
         initTunerFragment();
+
+        //Cerramos la aplicación cuando se pulsa el botón de retroceso
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Cerrar la aplicación
+                finishAffinity();
+            }
+        };
+
+        // Añadir el callback al dispatcher
+        this.getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     public void initFragment(int fragment) {
@@ -104,10 +124,14 @@ public class TunerActivity extends AppCompatActivity
         //Inicializar botones, eventos
         LinearLayout tunerFragment =  findViewById(R.id.tuner_fragment);
         textViewNote = (TextView) tunerFragment.findViewById(R.id.textViewNote);
-        textViewFreq = (TextView) tunerFragment.findViewById(R.id.textViewFreq);
+        deviationTop1 = (LinearLayout) tunerFragment.findViewById(R.id.deviationTop1);
+        deviationTop2 = (LinearLayout) tunerFragment.findViewById(R.id.deviationTop2);
+        deviationBottom1 = (LinearLayout) tunerFragment.findViewById(R.id.deviationBottom1);
+        deviationBottom2 = (LinearLayout) tunerFragment.findViewById(R.id.deviationBottom2);
+        /*textViewFreq = (TextView) tunerFragment.findViewById(R.id.textViewFreq);
         textViewLastNotes = (TextView) tunerFragment.findViewById(R.id.textViewLastNotes);
         textViewLastFreqs = (TextView) tunerFragment.findViewById(R.id.textViewLastFreqs);
-        textDBs = (TextView) tunerFragment.findViewById(R.id.textDBs);
+        textDBs = (TextView) tunerFragment.findViewById(R.id.textDBs);*/
 
         //Requerimos permiso de grabación e iniciamos el afinador
         requestAudioPermissions();
@@ -128,7 +152,7 @@ public class TunerActivity extends AppCompatActivity
                         "Es necesario grabar a través del micrófono para poder afinar"
                         , Toast.LENGTH_LONG).show();
 
-                //Requerimos al usuario el permiso
+                //Requerimos al usuario el p5rmiso
                 ActivityCompat.requestPermissions(this,
                         new String[] { Manifest.permission.RECORD_AUDIO},
                         PERMISSION_RECORD_AUDIO);
@@ -203,6 +227,119 @@ public class TunerActivity extends AppCompatActivity
             errMsg = errMsg == null || errMsg.isEmpty() ?
                     this.getString(R.string.not_sound) : errMsg;
             textViewNote.setText(errMsg);
+            //textViewFreq.setText("");
+        } else {
+            textViewNote.setText(note.getName());
+            /*textViewFreq.setText(note.getFrequency() + " Hz");
+            textViewLastFreqs.setText(lastDetections[LastDetections.FREQUENCIES]);
+            textViewLastNotes.setText(lastDetections[LastDetections.NOTES] + LastDetections.getNumEqualNotes());
+            textDBs.setText(""+note.getDecibels() + " DB");*/
+
+            //Guardamos las últimas notas en el historial
+            LastDetections.addDetection(note);
+
+
+            LinearLayout.LayoutParams layoutParamsHidden = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    0f
+            );
+            LinearLayout.LayoutParams layoutParamsAll = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    1f
+            );
+
+            if (LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES_TO_PRINT) {
+
+                int deviation = (int) note.getDeviation();
+
+                if (Math.abs(deviation) < 10) {
+
+                    AudioMessage.getInstance(this)
+                            .playMessage("El instrumento está correctamente afinado",
+                                    AudioMessage.AM_VIBRATION_INFO);
+
+
+                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            0,
+                            1f
+                    );
+                    deviationBottom1.setLayoutParams(layoutParamsHidden);
+                    deviationBottom2.setLayoutParams(layoutParamsAll);
+                    deviationTop1.setLayoutParams(layoutParamsHidden);
+                    deviationTop2.setLayoutParams(layoutParamsAll);
+                } else {
+
+                    deviation = Math.abs(deviation);
+                    int deviation2 = 100 - deviation;
+                    LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            0,
+                            deviation
+                    );
+                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            0,
+                            deviation2
+                    );
+                    int deviationColor = deviation > 25? Color.RED : Color.BLUE;
+
+
+                    if(deviation > 0) {
+                        //Cambiamos altura barra
+                        deviationBottom1.setLayoutParams(layoutParamsHidden);
+                        deviationBottom2.setLayoutParams(layoutParamsAll);
+                        deviationTop1.setLayoutParams(layoutParams1);
+                        deviationTop2.setLayoutParams(layoutParams2);
+
+                        //Cambiamos colores
+                        deviationBottom1.setBackgroundColor(Color.BLACK);
+                        deviationTop1.setBackgroundColor(deviationColor);
+                    } else {
+                        //Cambiamos altura barra
+                        deviationBottom1.setLayoutParams(layoutParams1);
+                        deviationBottom2.setLayoutParams(layoutParams2);
+                        deviationTop1.setLayoutParams(layoutParamsHidden);
+                        deviationTop2.setLayoutParams(layoutParamsAll);
+
+                        //Cambiamos colores
+                        deviationBottom1.setBackgroundColor(deviationColor);
+                        deviationTop1.setBackgroundColor(Color.BLACK);
+                    }
+                }
+
+                if (LastDetections.getNumEqualNotes() == LastDetections.MIN_EQUALS_NOTES) {
+
+                    AudioMessage.getInstance(this)
+                            .playMessage("Desviación de " + deviation + "%",
+                                    AudioMessage.AM_VIBRATION_INFO); //TODO modificar mensaje
+
+                }
+            } else {
+                //Cambiamos altura barra
+                deviationBottom1.setLayoutParams(layoutParamsHidden);
+                deviationBottom2.setLayoutParams(layoutParamsAll);
+                deviationTop1.setLayoutParams(layoutParamsHidden);
+                deviationTop2.setLayoutParams(layoutParamsAll);
+
+                //Cambiamos colores
+                deviationBottom1.setBackgroundColor(Color.BLACK);
+                deviationTop1.setBackgroundColor(Color.BLACK);
+            }
+        }
+
+
+    }
+
+    public void showTunerResults2(DetectedNote note, boolean isError, String errMsg) {
+
+        String[] lastDetections =  LastDetections.print();
+        if (isError || note == null) {
+            errMsg = errMsg == null || errMsg.isEmpty() ?
+                    this.getString(R.string.not_sound) : errMsg;
+            textViewNote.setText(errMsg);
             textViewFreq.setText("");
         } else {
             textViewNote.setText(note.getName());
@@ -218,7 +355,7 @@ public class TunerActivity extends AppCompatActivity
 
                 AudioMessage.getInstance(this)
                         .playMessage("Desviación de " + (int)note.getDeviation() + "%",
-                                AudioMessage.AM_VIBRATION_INFO);
+                                AudioMessage.AM_VIBRATION_INFO); //TODO modificar mensaje
 
             }
         }
@@ -296,6 +433,7 @@ public class TunerActivity extends AppCompatActivity
         configuration.setLocale(locale);
         getBaseContext().createConfigurationContext(configuration);
     }
+
 
 
 }
