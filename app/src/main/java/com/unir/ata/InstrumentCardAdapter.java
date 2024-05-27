@@ -1,7 +1,6 @@
 package com.unir.ata;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
 
     private final List<InstrumentCardItem> instrumentCardItemList;
     private final OnCardItemClickListener listener;
-    private Context context;
 
     public interface OnCardItemClickListener {
         //void onImageClick(int position);
@@ -28,11 +26,10 @@ public class InstrumentCardAdapter extends RecyclerView.Adapter<InstrumentCardAd
         void onLongClick(int position);
     }
 
-    public InstrumentCardAdapter(Context context, List<InstrumentCardItem> instrumentCardItemList,
+    public InstrumentCardAdapter(List<InstrumentCardItem> instrumentCardItemList,
                                  OnCardItemClickListener listener) {
         this.instrumentCardItemList = instrumentCardItemList;
         this.listener = listener;
-        this.context = context;
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {

@@ -6,15 +6,14 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -52,16 +50,11 @@ public class TunerActivity extends AppCompatActivity
     private TextView textViewLastFreqs;
     private TextView textDBs;
 
-    //Variables para el fragment de selector de instrumentos
-    private RecyclerView recyclerView;
-    private InstrumentCardAdapter cardAdapter;
     private List<InstrumentCardItem> instrumentCardItems;
 
     //Navegacion
     private Navigation navigation;
     private Persistence persistence;
-    private int instrument;
-    private String language;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -112,7 +105,7 @@ public class TunerActivity extends AppCompatActivity
         if (fragment == Navigation.TUNER_ACTIVITY) {
             initTunerFragment();
         } else if (fragment == Navigation.INFO_ACTIVITY) {
-            //initTunerFragment();
+            initInfoFragment();
         } else if (fragment == Navigation.OPTIONS_ACTIVITY){
             initInstrumentsFragment();
         }
@@ -123,11 +116,11 @@ public class TunerActivity extends AppCompatActivity
 
         //Inicializar botones, eventos
         LinearLayout tunerFragment =  findViewById(R.id.tuner_fragment);
-        textViewNote = (TextView) tunerFragment.findViewById(R.id.textViewNote);
-        deviationTop1 = (LinearLayout) tunerFragment.findViewById(R.id.deviationTop1);
-        deviationTop2 = (LinearLayout) tunerFragment.findViewById(R.id.deviationTop2);
-        deviationBottom1 = (LinearLayout) tunerFragment.findViewById(R.id.deviationBottom1);
-        deviationBottom2 = (LinearLayout) tunerFragment.findViewById(R.id.deviationBottom2);
+        textViewNote = tunerFragment.findViewById(R.id.textViewNote);
+        deviationTop1 = tunerFragment.findViewById(R.id.deviationTop1);
+        deviationTop2 = tunerFragment.findViewById(R.id.deviationTop2);
+        deviationBottom1 = tunerFragment.findViewById(R.id.deviationBottom1);
+        deviationBottom2 = tunerFragment.findViewById(R.id.deviationBottom2);
         /*textViewFreq = (TextView) tunerFragment.findViewById(R.id.textViewFreq);
         textViewLastNotes = (TextView) tunerFragment.findViewById(R.id.textViewLastNotes);
         textViewLastFreqs = (TextView) tunerFragment.findViewById(R.id.textViewLastFreqs);
@@ -198,17 +191,12 @@ public class TunerActivity extends AppCompatActivity
         }
     }
 
-    private void initNavigation() {
-        navigation.initNavigation();
-    }
-
-
     private void initTuner() {
         tuner = Tuner.getInstance(this);
 
         //Obtenemos el instrumento seleccionado
         persistence = Persistence.getInstance(this);
-        instrument = persistence.getInstrument();
+        int instrument = persistence.getInstrument();
 
         tuner.setInstrument(instrument);
 
@@ -339,7 +327,7 @@ public class TunerActivity extends AppCompatActivity
                     if (isInstrumentInTune) {
                         AudioMessage.getInstance(this)
                                 .playMessage(getString(R.string.instrument_is_on_tune),
-                                        AudioMessage.AM_VIBRATION_INFO);
+                                        AudioMessage.AM_VIBRATION_CONFIRM);
                     } else {
                         AudioMessage.getInstance(this)
                                 .playMessage(getString(R.string.tune) + msgVeryModifier + msgDirectionModifier ,
@@ -399,11 +387,23 @@ public class TunerActivity extends AppCompatActivity
 
     }*/
 
+    public void initInfoFragment() {
+
+        LinearLayout infoFragment = findViewById(R.id.info_fragment);
+        TextView infoTextView = infoFragment.findViewById(R.id.infoTxt);
+
+        infoTextView.setOnClickListener(v ->
+                AudioMessage.getInstance(this)
+                        .playMessage((String) Objects.requireNonNull(infoTextView.getText()),
+                                AudioMessage.AM_VIBRATION_INFO));
+    }
+
     public void initInstrumentsFragment() {
 
         // Inicializar RecyclerView
         LinearLayout instrumentsFragment = findViewById(R.id.instruments_fragment);
-        recyclerView = instrumentsFragment.findViewById(R.id.recyclerView);
+        //Variables para el fragment de selector de instrumentos
+        RecyclerView recyclerView = instrumentsFragment.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Inicializar instrucciones
@@ -423,7 +423,7 @@ public class TunerActivity extends AppCompatActivity
                 getString(R.string.saxofon), getString(R.string.saxofon_description)));
 
         // Inicializar el adaptador del recyclerView
-        cardAdapter = new InstrumentCardAdapter(this, instrumentCardItems, this);
+        InstrumentCardAdapter cardAdapter = new InstrumentCardAdapter(instrumentCardItems, this);
         recyclerView.setAdapter(cardAdapter);
     }
 
@@ -458,7 +458,7 @@ public class TunerActivity extends AppCompatActivity
     private void initSettings(){
 
         persistence = Persistence.getInstance(this);
-        language = persistence.getLanguage();
+        String language = persistence.getLanguage();
 
         Locale locale = new Locale(language);
         Locale.setDefault(locale);

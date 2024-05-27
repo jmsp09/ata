@@ -26,7 +26,6 @@
         android:textSize="40sp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@android:color/white"
-        android:text="Description" />
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,12 +35,7 @@ public class MainActivity extends AppCompatActivity {
             splashScreen = SplashScreen.installSplashScreen(this); //init new splash screen api for Android 12+
 
             //Keep returning false to Should Keep On Screen until ready to begin.
-            splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
-                @Override
-                public boolean shouldKeepOnScreen() {
-                    return keep;
-                }
-            });
+            splashScreen.setKeepOnScreenCondition(() -> keep);
             Handler handler = new Handler();
             handler.postDelayed(runner, DELAY);
             super.onCreate(savedInstanceState);
@@ -51,13 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private final Runnable runner = new Runnable() {
-        @Override
-        public void run() {
-            keep = false;
-            start();
+    private final Runnable runner = () -> {
+        keep = false;
+        start();
 
-        }
     };
 
     private void start() {
@@ -88,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = findViewById(R.id.textViewIni);
         textView.setText(R.string.turnVolumeUp);
+        textView.setOnClickListener(v ->
+                AudioMessage.getInstance(this)
+                        .playMessage((String) Objects.requireNonNull(textView.getText()),
+                                AudioMessage.AM_VIBRATION_INFO));
     }
 
 

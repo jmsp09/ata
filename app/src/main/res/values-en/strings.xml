@@ -58,4 +58,5 @@
     <string name="nota_sol_sostenido">G#</string>
     <string name="nota_la">A</string>
     <string name="nota_la_sostenido">A#</string>
+    <string name="continuar">Continue</string>
 </resources>

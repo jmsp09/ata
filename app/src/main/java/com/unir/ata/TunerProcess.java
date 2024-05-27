@@ -51,8 +51,6 @@ public class TunerProcess implements Runnable {
 
     public void run() {
 
-        Log.d("!!!********Run ", "!!!********");
-
         //Poperties del instrumento
         Instrument.Properties instrumentProperties =
                 Instrument.getInstrumentProperties(this.instrument, this.tuner.activity);
@@ -116,7 +114,6 @@ public class TunerProcess implements Runnable {
         double[] imaginaryPart = new double[SEGMENT];
         FFT fft = new FFT(NUMBER_OF_BITS_FFT);
 
-        Log.d("!!!********Start recording ", "!!!********");
         //Inicializamos la grabación
         audioRecord.startRecording();
         Log.d("!!!********Start recording2 ", "!!!********");
