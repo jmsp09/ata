@@ -5,7 +5,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -116,7 +115,6 @@ public class TunerProcess implements Runnable {
 
         //Inicializamos la grabación
         audioRecord.startRecording();
-        Log.d("!!!********Start recording2 ", "!!!********");
 
         //Capturamos el audio constantemente
         while (!Thread.interrupted()) {
@@ -147,8 +145,7 @@ public class TunerProcess implements Runnable {
                 if (current_amplitude > bestAmplitude) {
 
                     bestFrequency = current_frequency;
-                    bestAmplitude = current_amplitude;Log.d("!!!bFreq: " + bestFrequency +" bAmpl: " + bestAmplitude,
-                            "!!!bFreq: " + bestFrequency +" bAmpl: " + bestAmplitude);
+                    bestAmplitude = current_amplitude;
                 }
 
             }
@@ -157,10 +154,6 @@ public class TunerProcess implements Runnable {
 
 
             if (bestFrequency > MIN_FREQ && db > MIN_DB) {
-                Log.d("!!!********!< DB: " + db, "!!!********!< DB: " + db);
-                Log.d("!!!bestFrequency: " + bestFrequency, "!!!bestFrequency: " + bestFrequency);
-                Log.d("!!!bestAmplitude: " + bestAmplitude, "!!!bestAmplitude: " + bestAmplitude);
-                Log.d("!!!!!!!!!!!!", "!!!!!!!!!!!!!!!! ");
                 postResultsByHandler(
                         getDetectedNote(bestFrequency, db, INSTRUMENT_FREQ_REF, MAX_DEVIATION, NOTE_REF),
                         false, null);
@@ -192,7 +185,6 @@ public class TunerProcess implements Runnable {
 
         // Convertir las octavas a frecuencia
         octaves = Math.pow(2, octaves);
-        Log.d("!!!********!octaves: " + octaves, "!!!********!octaves: " + octaves);
 
         //Notas La, Si#, Si, Do, Do#, Re...
         double[] frequencies = {440.0, 466.16, 493.88, 523.25, 554.37, 587.33, 622.25, 659.26, 698.46,
@@ -203,8 +195,6 @@ public class TunerProcess implements Runnable {
         if (interval < 0 || interval >= frequencies.length) {
             return note;
         }
-        Log.d("!!!********!octINTERVAL: " + interval + " " + frecuency, "!!!********!fREF: " + frequencies[interval] * octaves);
-
         // Calcular la frecuencia de referencia (si estuviera afinada)
         double freqReference = frequencies[interval] * octaves;
         double nearReference = (interval == 11 ? frequencies[interval - 1] : frequencies[interval + 1]) * octaves;
@@ -219,7 +209,6 @@ public class TunerProcess implements Runnable {
 
         double diff = frecuency - freqReference;
 
-        Log.d("!!!********!diffNearReference: " + diffNearReference, "!!!********!diff: " + diff);
         note.setDeviation((int)Math.round(diff * 100 / diffNearReference));
 
         //Buscamos la diferencia respecto la frecuencia buscada por el instrumento
@@ -232,7 +221,6 @@ public class TunerProcess implements Runnable {
 
 
         //Marcamos los decibelios
-        Log.d("!!!********!getDeviation: " + note.getDeviation(), "!!!********!diff: " + diff);
         note.setDecibels(decibels);
 
         return note;

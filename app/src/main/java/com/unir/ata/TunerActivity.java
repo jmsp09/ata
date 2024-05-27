@@ -45,15 +45,9 @@ public class TunerActivity extends AppCompatActivity
     private LinearLayout deviationTop2;
     private LinearLayout deviationBottom1;
     private LinearLayout deviationBottom2;
-    private TextView textViewFreq;
-    private TextView textViewLastNotes;
-    private TextView textViewLastFreqs;
-    private TextView textDBs;
 
     private List<InstrumentCardItem> instrumentCardItems;
 
-    //Navegacion
-    private Navigation navigation;
     private Persistence persistence;
 
     @SuppressLint("MissingInflatedId")
@@ -75,7 +69,9 @@ public class TunerActivity extends AppCompatActivity
         initSettings();
 
         //Inicializar navegacion
-        navigation = Navigation.getInstance(this);
+        Navigation.getInstance(this);
+
+        //Inicializar sistema de feedback de audio
         AudioMessage.getInstance(this);
 
         //Inicializamos afinador
@@ -121,10 +117,6 @@ public class TunerActivity extends AppCompatActivity
         deviationTop2 = tunerFragment.findViewById(R.id.deviationTop2);
         deviationBottom1 = tunerFragment.findViewById(R.id.deviationBottom1);
         deviationBottom2 = tunerFragment.findViewById(R.id.deviationBottom2);
-        /*textViewFreq = (TextView) tunerFragment.findViewById(R.id.textViewFreq);
-        textViewLastNotes = (TextView) tunerFragment.findViewById(R.id.textViewLastNotes);
-        textViewLastFreqs = (TextView) tunerFragment.findViewById(R.id.textViewLastFreqs);
-        textDBs = (TextView) tunerFragment.findViewById(R.id.textDBs);*/
 
         //Requerimos permiso de grabación e iniciamos el afinador
         requestAudioPermissions();
@@ -319,11 +311,6 @@ public class TunerActivity extends AppCompatActivity
 
                 if (LastDetections.getNumEqualNotes() >= LastDetections.MIN_EQUALS_NOTES) {
 
-                    //Afinación muy alta // A
-                        /*AudioMessage.getInstance(this)
-                                .playMessage("Desviación de " + deviation + "%",
-                                        AudioMessage.AM_VIBRATION_INFO); */
-
                     if (isInstrumentInTune) {
                         AudioMessage.getInstance(this)
                                 .playMessage(getString(R.string.instrument_is_on_tune),
@@ -355,38 +342,6 @@ public class TunerActivity extends AppCompatActivity
 
     }
 
-
-/*
-    public void showTunerResults2(DetectedNote note, boolean isError, String errMsg) {
-
-        String[] lastDetections =  LastDetections.print();
-        if (isError || note == null) {
-            errMsg = errMsg == null || errMsg.isEmpty() ?
-                    this.getString(R.string.not_sound) : errMsg;
-            textViewNote.setText(errMsg);
-            textViewFreq.setText("");
-        } else {
-            textViewNote.setText(note.getName());
-            textViewFreq.setText(note.getFrequency() + " Hz");
-            textViewLastFreqs.setText(lastDetections[LastDetections.FREQUENCIES]);
-            textViewLastNotes.setText(lastDetections[LastDetections.NOTES] + LastDetections.getNumEqualNotes());
-            textDBs.setText(""+note.getDecibels() + " DB");
-
-            //Guardamos las últimas notas en el historial
-            LastDetections.addDetection(note);
-
-            if(LastDetections.getNumEqualNotes() == LastDetections.MIN_EQUALS_NOTES) {
-
-                AudioMessage.getInstance(this)
-                        .playMessage("Desviación de " + (int)note.getDeviation() + "%",
-                                AudioMessage.AM_VIBRATION_INFO);
-
-            }
-        }
-
-
-    }*/
-
     public void initInfoFragment() {
 
         LinearLayout infoFragment = findViewById(R.id.info_fragment);
@@ -396,6 +351,13 @@ public class TunerActivity extends AppCompatActivity
                 AudioMessage.getInstance(this)
                         .playMessage((String) Objects.requireNonNull(infoTextView.getText()),
                                 AudioMessage.AM_VIBRATION_INFO));
+
+        infoTextView.setOnLongClickListener(v -> {
+            AudioMessage.getInstance(this)
+                    .playMessage((String) infoTextView.getText(),
+                            AudioMessage.AM_VIBRATION_CONFIRM);
+            return true;
+        });
     }
 
     public void initInstrumentsFragment() {
