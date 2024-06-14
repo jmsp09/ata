@@ -276,7 +276,7 @@ public class TunerActivity extends AppCompatActivity
                             deviation2
                     );
                     boolean bigDeviation = deviation > 50;
-                    int deviationColor =  bigDeviation ? Color.RED : Color.BLUE;
+                    int deviationColor =  bigDeviation ? Color.RED : Color.parseColor("#FFA401"); //Naranja
                     msgVeryModifier = bigDeviation? getString(R.string.very) : getString(R.string.a_bit);
                     msgDirectionModifier = directionTop? getString(R.string.high) : getString(R.string.low);
 
